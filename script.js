@@ -23,16 +23,25 @@ const Gameboard = (function () {
     }
     
     const drawCell = function(player, pos) {
-        board[pos].markCell(player);
+        if(pos > 8 || pos < 0) return printBoard(); //Prohibit non-existing cell selection.
+        
+        const targetCell = board[pos];
+
+        if(targetCell.getMarker() !== 0) { //Prevent drawing on cells that are already marked.
+            console.log("This cell is already marked, please select other unmarked cells.");
+            return printBoard();;
+        }
+
+        targetCell.markCell(player);
         printBoard();
     }
-
 
     return {
         getBoard,
         printBoard,
         drawCell,
-    }
+    };
+
 })();
 
 
@@ -49,6 +58,7 @@ function Cell() {
 
     const markCell = function(player) {
         marker = player.marker;
+        console.log(marker);
     }
 
     return {
@@ -68,5 +78,5 @@ const player = function(marker) {
 const playerX = player("X");
 const playerO = player("O");
 
-Gameboard.printBoard(); 
 
+Gameboard.printBoard();
