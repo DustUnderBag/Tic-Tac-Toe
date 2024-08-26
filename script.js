@@ -8,6 +8,7 @@ Responsibilities:
 const Gameboard = function () {
     const rows = 3;
     const board = [];   
+    let markedCount = 0;
 
     for(let i = 0; i < 9; i++) {
         board.push(Cell());
@@ -21,26 +22,28 @@ const Gameboard = function () {
         console.log(boardWithCellValue[3],boardWithCellValue[4],boardWithCellValue[5]);
         console.log(boardWithCellValue[6],boardWithCellValue[7],boardWithCellValue[8]);
     }
+
     
-    const drawCell = function(player, pos) {
-        if(pos > 8 || pos < 0) return; //Prohibit non-existing cell selection.
-        
-        const targetCell = board[pos];
+    const addMarkedCount = function() {
+        ++markedCount;
+        console.log("mark count: " + markedCount);
+    }
 
-        if(targetCell.getMarker() !== 0) { //Prevent drawing on cells that are already marked.
-            return;
-        }
+    const getMarkedCount = () => markedCount;
 
-        targetCell.markCell(player);
+    const isFull = function() {
+        return (markedCount === 9) ? true : false;
     }
 
     return {
         getBoard,
         printBoard,
-        drawCell,
+
+        addMarkedCount,
+        getMarkedCount,
+        isFull,
     };
 }
-
 
 //A function factory for Cell object that contains two methods.
 /*
@@ -66,7 +69,8 @@ function Cell() {
 
 const gameController = (function() {
     const board = Gameboard();
-   
+    
+
     const _init = function() {
         board.printBoard();
         console.log(`Active Player: ${getActivePlayer().playerName}`);
@@ -80,24 +84,51 @@ const gameController = (function() {
     const playerX = player("X");
     const playerO = player("O");
 
-
     let activePlayer = playerX;
- 
+
     const getActivePlayer = function() {
         return activePlayer;
     }
 
+    const drawCell = function(player, pos) {
+        const targetCell = board.getBoard()[pos];
+        targetCell.markCell(player);
+    }
+
     const switchActivePlayer = function() {
         activePlayer = (activePlayer == playerX) ? playerO : playerX;
-        console.log(`It's ${getActivePlayer().playerName}'s turn`);
     }
 
     const playRound = function(pos) {
-        board.drawCell(getActivePlayer(), pos);
-        
+        if( isValidInput(pos) ) {
+            drawCell(getActivePlayer(), pos);
+            board.addMarkedCount();
+            switchActivePlayer();
+        }
+
+        console.log(`It's ${getActivePlayer().playerName}'s turn`);
+
         board.printBoard();
 
-        switchActivePlayer();
+        if(board.isFull()) {
+            console.log("board is full");
+        };        
+    }
+
+    const isValidInput = function(pos) {
+        if(pos > 8 || pos < 0) {
+            console.log("Selected cell is beyond scope."); //Prohibit non-existing cell selection.
+            return false;
+        }
+
+        const targetCell = board.getBoard()[pos];
+
+        if(targetCell.getMarker() !== 0) { //Prevent drawing on cells that are already marked.
+            console.log("This cell is already marked.");
+            return false;
+        }
+
+        return true;
     }
 
     _init();
