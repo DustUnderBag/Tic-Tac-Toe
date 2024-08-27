@@ -216,6 +216,25 @@ const gameController = (function() {
         }
     }
 
+    const checkWin = function() {
+        for(const combo of board.getCombos()) {
+            let XCount = combo.getXCount();
+            let OCount = combo.getOCount();
+
+            let winner;
+            if(XCount === 3) {
+                winner = playerX.playerName;
+                console.log(winner + " wins!")
+                return;
+            }else if(OCount === 3) {
+                winner = playerO.playerName;
+                console.log(winner + " wins!")
+                return;
+            }
+        }
+    }
+
+
     _init();
 
     return {
