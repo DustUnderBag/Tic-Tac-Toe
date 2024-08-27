@@ -36,35 +36,47 @@ const Gameboard = function () {
 
     //Store winning combos.
     const combos = [];
-        
+
     //Row Combos
     let rowOffset = 0;
     for(let i = 0; i < 3; i++) {
-        combos.push([]);
+        const arr = [];
         for(let j = 0; j < 3; j++) {
             let pos = j + rowOffset;
-            combos[i].push(pos);
-
+            arr.push(pos);
         }
+        combos.push(Combo(arr));
         rowOffset += 3;
     }
 
     //Column Combos
     let colOffset = 0;
     for(let i = 3; i < 6; i++) {
-        combos.push([]);
+        const arr = [];
         for(let j = 0; j <= 6; j += 3) {
             let pos = j + colOffset;
-            combos[i].push(pos)
+            arr.push(pos);
         }
+        combos.push(Combo(arr));
         colOffset += 1;
     }
 
-    combos.push([0,4,8], [2,4,6]);
+    combos.push( Combo( [0,4,8] ), Combo( [2,4,6] ) );
 
     const getCombos = () => combos;
 
+    const printCombos = function() {
+        const combosWithPos = [];
+        for(const combo of combos) {
+            const pos = combo.getPos().slice(0);
+            let XCount = combo.getXCount();
+            let OCount = combo.getOCount();
+            pos.push(XCount, OCount);
+            combosWithPos.push(pos);
+        }
 
+        console.log(combosWithPos);
+    }
 
     return {
         getBoard,
@@ -75,6 +87,7 @@ const Gameboard = function () {
         isFull,
 
         getCombos,
+        printCombos,
     };
 }
 
@@ -93,10 +106,33 @@ function Cell() {
         marker = player.marker;
     }
 
+    let message = "I'm the cell!"
+    const getMessage = () => message;
+
     return {
         getMarker,
         markCell,
+        getMessage,
     }
+}
+
+const Combo = function(arr) {
+    const getPos = () => arr;
+
+    let XCount = 0;
+    let OCount = 0;
+
+    const getXCount = () => XCount;
+    const getOCount = () => OCount;
+
+    const setXCount = count => XCount = count;
+    const setOCount = count => OCount = count;
+    
+    return {
+        getPos,
+        getXCount, getOCount,
+        setXCount, setOCount,
+    };
 }
 
 const gameController = (function() {
@@ -105,7 +141,7 @@ const gameController = (function() {
     const _init = function() {
         board.printBoard();
         console.log(`Active Player: ${getActivePlayer().playerName}`);
-        console.log(board.getCombos());
+        console.log(board.printCombos());
     }
     
     //Player objects, that stores player name and marker
@@ -134,17 +170,21 @@ const gameController = (function() {
     const playRound = function(pos) {
         if( isValidInput(pos) ) {
             drawCell(getActivePlayer(), pos);
+
+            board.printBoard();
+            addCounts();
             board.addMarkedCount();
+
+            board.printCombos();
+            checkWin();
+
             switchActivePlayer();
+            console.log(`It's ${getActivePlayer().playerName}'s turn`);
         }
-
-        console.log(`It's ${getActivePlayer().playerName}'s turn`);
-
-        board.printBoard();
 
         if(board.isFull()) {
             console.log("board is full");
-        };        
+        };
     }
 
     const isValidInput = function(pos) {
@@ -160,6 +200,20 @@ const gameController = (function() {
             return false;
         }
         return true;
+    }
+
+    const addCounts = function() {
+        for(const combo of board.getCombos() ) {
+            let XCount = 0;
+            let OCount = 0;
+            for(const pos of combo.getPos()) {
+                let mark = board.getBoard()[pos].getMarker();
+                if(mark === "X") XCount++;
+                if(mark === "O") OCount++;
+            }
+            combo.setXCount(XCount);
+            combo.setOCount(OCount);
+        }
     }
 
     _init();
