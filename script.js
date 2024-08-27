@@ -135,7 +135,7 @@ const Combo = function(arr) {
     };
 }
 
-const gameController = (function() {
+const gameController = function() {
     const board = Gameboard();
 
     const _init = function() {
@@ -182,8 +182,8 @@ const gameController = (function() {
             console.log(`It's ${getActivePlayer().playerName}'s turn`);
         }
 
-        if(board.isFull()) {
-            console.log("board is full");
+        if(board.isFull() && !checkWin() ) {
+            console.log("It is a TIE!");
         };
     }
 
@@ -221,19 +221,16 @@ const gameController = (function() {
             let XCount = combo.getXCount();
             let OCount = combo.getOCount();
 
-            let winner;
+            let winner = null;
             if(XCount === 3) {
                 winner = playerX.playerName;
-                console.log(winner + " wins!")
-                return;
+                return console.log(winner + " wins!");                
             }else if(OCount === 3) {
                 winner = playerO.playerName;
-                console.log(winner + " wins!")
-                return;
+                return console.log(winner + " wins!");
             }
         }
     }
-
 
     _init();
 
@@ -241,4 +238,7 @@ const gameController = (function() {
         getActivePlayer,
         playRound,
     }
-})();
+};
+
+
+game = gameController();
