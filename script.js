@@ -6,7 +6,7 @@ Responsibilities:
     - Draw marker on cells, takes player and pos as parameters.
 */
 const Gameboard = function () {
-    const rows = 3;
+    const rowsNum = 3;
     const board = [];   
     let markedCount = 0;
 
@@ -23,7 +23,6 @@ const Gameboard = function () {
         console.log(boardWithCellValue[6],boardWithCellValue[7],boardWithCellValue[8]);
     }
 
-    
     const addMarkedCount = function() {
         ++markedCount;
         console.log("mark count: " + markedCount);
@@ -35,6 +34,38 @@ const Gameboard = function () {
         return (markedCount === 9) ? true : false;
     }
 
+    //Store winning combos.
+    const combos = [];
+        
+    //Row Combos
+    let rowOffset = 0;
+    for(let i = 0; i < 3; i++) {
+        combos.push([]);
+        for(let j = 0; j < 3; j++) {
+            let pos = j + rowOffset;
+            combos[i].push(pos);
+
+        }
+        rowOffset += 3;
+    }
+
+    //Column Combos
+    let colOffset = 0;
+    for(let i = 3; i < 6; i++) {
+        combos.push([]);
+        for(let j = 0; j <= 6; j += 3) {
+            let pos = j + colOffset;
+            combos[i].push(pos)
+        }
+        colOffset += 1;
+    }
+
+    combos.push([0,4,8], [2,4,6]);
+
+    const getCombos = () => combos;
+
+
+
     return {
         getBoard,
         printBoard,
@@ -42,6 +73,8 @@ const Gameboard = function () {
         addMarkedCount,
         getMarkedCount,
         isFull,
+
+        getCombos,
     };
 }
 
@@ -66,14 +99,13 @@ function Cell() {
     }
 }
 
-
 const gameController = (function() {
     const board = Gameboard();
-    
 
     const _init = function() {
         board.printBoard();
         console.log(`Active Player: ${getActivePlayer().playerName}`);
+        console.log(board.getCombos());
     }
     
     //Player objects, that stores player name and marker
@@ -127,7 +159,6 @@ const gameController = (function() {
             console.log("This cell is already marked.");
             return false;
         }
-
         return true;
     }
 
@@ -138,5 +169,3 @@ const gameController = (function() {
         playRound,
     }
 })();
-
-const game = gameController;
