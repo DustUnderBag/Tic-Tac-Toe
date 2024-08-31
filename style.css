@@ -40,6 +40,11 @@ body {
     & :hover {
         border: 2px solid black;
     }
+
+    &.winning-cell {
+        color: orange;
+        font-weight: 900;
+    }
 }
 
 .cell.xMark {
@@ -50,5 +55,4 @@ body {
 .cell.oMark {
     background-image: url(./img/circle.svg);
 }
-
 

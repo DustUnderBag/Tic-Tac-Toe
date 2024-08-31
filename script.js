@@ -106,6 +106,10 @@ function Cell() {
         marker = player.marker;
     }
 
+    let isWinningCell = false;
+    const getIsWinningCell = () => isWinningCell;
+    const setIsWinningCell = () => isWinningCell = true;
+
     let message = "I'm the cell!"
     const getMessage = () => message;
 
@@ -113,6 +117,9 @@ function Cell() {
         getMarker,
         markCell,
         getMessage,
+
+        getIsWinningCell,
+        setIsWinningCell,
     }
 }
 
@@ -216,19 +223,31 @@ const gameController = function() {
         }
     }
 
+    let completedCombo = null;
+    const getCompletedCombo = () => completedCombo;
+
     const checkWin = function() {
         for(const combo of board.getCombos()) {
-            let XCount = combo.getXCount();
-            let OCount = combo.getOCount();
+            let xCount = combo.getXCount();
+            let oCount = combo.getOCount();
 
-            let winner = null;
-            if(XCount === 3) {
-                winner = playerX.playerName;
-                return console.log(winner + " wins!");                
-            }else if(OCount === 3) {
-                winner = playerO.playerName;
-                return console.log(winner + " wins!");
+            let winner =  (xCount === 3) 
+                        ? playerX.playerName
+                        : (oCount === 3) 
+                        ? playerO.playerName
+                        : null;
+
+            if(winner) { //If winner != null
+                console.log(winner + " wins!");
+                setAllWinningCells(combo);
             }
+        }
+    }
+
+    function setAllWinningCells(completedCombo) {
+        for(const pos of completedCombo.getPos() ) {
+            const cell = board.getBoard()[pos];
+            cell.setIsWinningCell();
         }
     }
 
@@ -238,6 +257,8 @@ const gameController = function() {
         getActivePlayer,
         playRound,
         getBoard: board.getBoard,
+
+        getCompletedCombo,
     }
 };
 
@@ -264,14 +285,19 @@ function screenController() {
     function updateDisplay() {
         const board = game.getBoard();
         for(let i = 0; i < board.length; i++) {
-            const marker = board[i].getMarker();
-            if(marker === 0 ) continue;
+            const cell = board[i];
+
+            const marker = cell.getMarker();
+            if(marker === 0 ) continue; //Jump to next iteration if the cell is empty.
 
             let selector = `[data-index = "${i}"]`;
             const cellDiv = document.querySelector(selector);
             cellDiv.textContent = marker;
-        }
 
+            if(cell.getIsWinningCell()) {
+                cellDiv.classList.add('winning-cell');
+            }
+        }
     }
 }
 
