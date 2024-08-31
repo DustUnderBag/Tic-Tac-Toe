@@ -142,7 +142,7 @@ const gameController = function() {
         board.printBoard();
         console.log(`Active Player: ${getActivePlayer().playerName}`);
         console.log(board.printCombos());
-    }
+    } 
     
     //Player objects, that stores player name and marker
     const player = function(marker) {
@@ -237,8 +237,43 @@ const gameController = function() {
     return {
         getActivePlayer,
         playRound,
+        getBoard: board.getBoard,
     }
 };
 
 
-game = gameController();
+
+function screenController() {
+    const game = gameController();
+    _init();
+
+    function _init() {
+        updateDisplay();
+    }
+
+    const boardDiv = document.querySelector('.gameboard');
+
+    boardDiv.addEventListener('click', clickHandler);
+
+    function clickHandler(e) {
+        const targetIndex =  e.target.getAttribute("data-index");
+        game.playRound(targetIndex);
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        const board = game.getBoard();
+        for(let i = 0; i < board.length; i++) {
+            const marker = board[i].getMarker();
+            if(marker === 0 ) continue;
+
+            let selector = `[data-index = "${i}"]`;
+            const cellDiv = document.querySelector(selector);
+            cellDiv.textContent = marker;
+        }
+
+    }
+}
+
+
+screenController();

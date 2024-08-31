@@ -33,26 +33,22 @@ body {
     align-items: center;
     font-size: 5rem;
     background-color: rgb(131, 141, 122);
+    background-size: 60%;
+    background-repeat: no-repeat;
+    background-position: center;
 
     & :hover {
         border: 2px solid black;
     }
 }
 
-.cell > span {
-    width: 100%;
-    height: 100%;
-
-    background-size: 60%;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.cell.xMark > span {
+.cell.xMark {
     background-image: url(./img/cross.svg);
 
 }
 
-.cell.oMark > span{
+.cell.oMark {
     background-image: url(./img/circle.svg);
 }
+
+
