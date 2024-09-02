@@ -266,24 +266,26 @@ const gameController = function() {
 
 function screenController() {
     const game = gameController();
-    _init();
 
-    function _init() {
-        updateDisplay();
-    }
-
+    //Cache DOM
     const boardDiv = document.querySelector('.gameboard');
+    const board = game.getBoard();
+
+    _render();
+
+    function _render() {
+        updateBoard();
+    }
 
     boardDiv.addEventListener('click', clickHandler);
 
     function clickHandler(e) {
         const targetIndex =  e.target.getAttribute("data-index");
         game.playRound(targetIndex);
-        updateDisplay();
+        _render();
     }
 
-    function updateDisplay() {
-        const board = game.getBoard();
+    function updateBoard() {
         for(let i = 0; i < board.length; i++) {
             const cell = board[i];
 
