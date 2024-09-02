@@ -56,3 +56,13 @@ body {
     background-image: url(./img/circle.svg);
 }
 
+.player-turn {
+    display: flex;
+    gap: 3rem;
+    font-size: 3rem;
+    color: black;
+}
+
+.player-turn > .active{
+    color:red;
+}

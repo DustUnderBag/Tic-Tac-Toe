@@ -148,7 +148,6 @@ const gameController = function() {
     const _init = function() {
         board.printBoard();
         console.log(`Active Player: ${getActivePlayer().playerName}`);
-        console.log(board.printCombos());
     } 
     
     //Player objects, that stores player name and marker
@@ -270,11 +269,14 @@ function screenController() {
     //Cache DOM
     const boardDiv = document.querySelector('.gameboard');
     const board = game.getBoard();
+    const xTurn = document.querySelector('#xTurn');
+    const oTurn = document.querySelector("#oTurn");
 
     _render();
 
     function _render() {
         updateBoard();
+        updateActivePlayer();
     }
 
     boardDiv.addEventListener('click', clickHandler);
@@ -299,6 +301,17 @@ function screenController() {
             if(cell.getIsWinningCell()) {
                 cellDiv.classList.add('winning-cell');
             }
+        }
+    }
+
+    function updateActivePlayer() {
+        const activePlayerMarker = game.getActivePlayer().marker;
+        if(activePlayerMarker === "X") {
+            oTurn.classList.remove("active")
+            xTurn.classList.add("active");
+        } else {
+            xTurn.classList.remove("active")
+            oTurn.classList.add("active");
         }
     }
 }
