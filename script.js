@@ -215,6 +215,7 @@ const gameController = function() {
     }
 
     let winner = "";
+    const getWinner = () => winner;
 
     const checkWinner = function() {
         for(const combo of board.getCombos()) {
@@ -257,7 +258,8 @@ const gameController = function() {
         playRound,
         getBoard: board.getBoard,
 
-        checkWinner,
+        getWinner,
+        isRoundEnd,
     }
 };
 
@@ -271,6 +273,7 @@ function screenController() {
     const board = game.getBoard();
     const xTurn = document.querySelector('#xTurn');
     const oTurn = document.querySelector("#oTurn");
+    const winnerDiv = document.querySelector('.result > .winner');
 
     _render();
 
@@ -285,6 +288,10 @@ function screenController() {
         const targetIndex =  e.target.getAttribute("data-index");
         game.playRound(targetIndex);
         _render();
+
+        if(game.isRoundEnd()) {
+            showWinner();
+        }
     }
 
     function updateBoard() {
@@ -313,6 +320,18 @@ function screenController() {
             xTurn.classList.remove("active")
             oTurn.classList.add("active");
         }
+    }
+
+    function showWinner() {
+        const winner = game.getWinner();
+        if(winner === "X" || winner === "O") {
+            winnerDiv.textContent = `${winner} WINS!`;    
+            return;
+        }else if(winner === "tie") {
+            winnerDiv.textContent = `TIE!`;
+            return;
+        }
+        
     }
 }
 
