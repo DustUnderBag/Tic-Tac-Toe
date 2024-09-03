@@ -25,7 +25,6 @@ const Gameboard = function () {
 
     const addMarkedCount = function() {
         ++markedCount;
-        console.log("mark count: " + markedCount);
     }
 
     const getMarkedCount = () => markedCount;
@@ -74,8 +73,6 @@ const Gameboard = function () {
             pos.push(XCount, OCount);
             combosWithPos.push(pos);
         }
-
-        console.log(combosWithPos);
     }
 
     return {
@@ -144,10 +141,8 @@ const Combo = function(arr) {
 
 const gameController = function() {
     const board = Gameboard();
-
     const _init = function() {
         board.printBoard();
-        console.log(`Active Player: ${getActivePlayer().playerName}`);
     } 
     
     //Player objects, that stores player name and marker
@@ -174,26 +169,23 @@ const gameController = function() {
     }
 
     const playRound = function(pos) {
-        if( isValidInput(pos) ) {
-            drawCell(getActivePlayer(), pos);
-
-            board.printBoard();
-            addCounts();
-            board.addMarkedCount();
-
-            board.printCombos();
-            checkWin();
-
-            switchActivePlayer();
-            console.log(`It's ${getActivePlayer().playerName}'s turn`);
+        if( !isValidInput(pos) || isRoundEnd() ) {
+            return;
         }
+        drawCell(getActivePlayer(), pos);
 
-        if(board.isFull() && !checkWin() ) {
-            console.log("It is a TIE!");
-        };
+        //board.printBoard();
+        addCounts();
+
+        board.addMarkedCount();
+        checkWinner();
+
+        switchActivePlayer();
     }
 
     const isValidInput = function(pos) {
+        if(!pos) return false;
+
         if(pos > 8 || pos < 0) {
             console.log("Selected cell is beyond scope."); //Prohibit non-existing cell selection.
             return false;
@@ -210,37 +202,45 @@ const gameController = function() {
 
     const addCounts = function() {
         for(const combo of board.getCombos() ) {
-            let XCount = 0;
-            let OCount = 0;
+            let xCount = 0;
+            let oCount = 0;
             for(const pos of combo.getPos()) {
                 let mark = board.getBoard()[pos].getMarker();
-                if(mark === "X") XCount++;
-                if(mark === "O") OCount++;
+                if(mark === "X") xCount++;
+                if(mark === "O") oCount++;
             }
-            combo.setXCount(XCount);
-            combo.setOCount(OCount);
+            combo.setXCount(xCount);
+            combo.setOCount(oCount);
         }
     }
 
-    let completedCombo = null;
-    const getCompletedCombo = () => completedCombo;
+    let winner = "";
 
-    const checkWin = function() {
+    const checkWinner = function() {
         for(const combo of board.getCombos()) {
             let xCount = combo.getXCount();
             let oCount = combo.getOCount();
 
-            let winner =  (xCount === 3) 
-                        ? playerX.playerName
-                        : (oCount === 3) 
-                        ? playerO.playerName
-                        : null;
+            winner = (xCount === 3) ? "X"
+                    :(oCount === 3) ? "O"
+                    : "";
 
-            if(winner) { //If winner != null
-                console.log(winner + " wins!");
+            if(winner) {
                 setAllWinningCells(combo);
+                return;
+            }
+            if(!winner && board.isFull()) {
+                winner = "tie";
+                return;
             }
         }
+    }
+
+    function isRoundEnd() {
+        if(winner) {
+            return true;
+        }
+        return false;
     }
 
     function setAllWinningCells(completedCombo) {
@@ -257,7 +257,7 @@ const gameController = function() {
         playRound,
         getBoard: board.getBoard,
 
-        getCompletedCombo,
+        checkWinner,
     }
 };
 
