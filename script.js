@@ -8,15 +8,72 @@ Responsibilities:
 const Gameboard = function () {
     const rowsNum = 3;
     const board = [];   
+    const combos = [];   
     let markedCount = 0;
 
-    for(let i = 0; i < 9; i++) {
-        board.push(Cell());
+    init();
+
+    function init() {
+        markedCount = 0;
+        _makeBoardCells();
+        _generateCombos();
+    }
+
+    function _makeBoardCells() {
+        board.length = 0;
+        for(let i = 0; i < 9; i++) {
+            board.push(Cell());
+        }
     }
 
     const getBoard = () => board;
 
-    const printBoard = function() {
+    //Store winning combos.
+ 
+    function _generateCombos() {
+        combos.length = 0;
+        //Row Combos
+        let rowOffset = 0;
+        for(let i = 0; i < 3; i++) {
+            const arr = [];
+            for(let j = 0; j < 3; j++) {
+                let pos = j + rowOffset;
+                arr.push(pos);
+            }
+            combos.push(Combo(arr));
+            rowOffset += 3;
+        }
+
+        //Column Combos
+        let colOffset = 0;
+        for(let i = 3; i < 6; i++) {
+            const arr = [];
+            for(let j = 0; j <= 6; j += 3) {
+                let pos = j + colOffset;
+                arr.push(pos);
+            }
+            combos.push(Combo(arr));
+            colOffset += 1;
+        }
+
+        combos.push( Combo( [0,4,8] ), Combo( [2,4,6] ) );
+    }
+
+
+    const getCombos = () => combos;
+
+    const printCombos = function() {
+        const combosWithPos = [];
+        for(const combo of combos) {
+            const pos = combo.getPos().slice(0);
+            let XCount = combo.getXCount();
+            let OCount = combo.getOCount();
+            pos.push(XCount, OCount);
+            combosWithPos.push(pos);
+        }
+    }
+
+    function printBoard() {
         const boardWithCellValue = board.map(cell => cell.getMarker());
         console.log(boardWithCellValue[0],boardWithCellValue[1],boardWithCellValue[2]);
         console.log(boardWithCellValue[3],boardWithCellValue[4],boardWithCellValue[5]);
@@ -33,48 +90,6 @@ const Gameboard = function () {
         return (markedCount === 9) ? true : false;
     }
 
-    //Store winning combos.
-    const combos = [];
-
-    //Row Combos
-    let rowOffset = 0;
-    for(let i = 0; i < 3; i++) {
-        const arr = [];
-        for(let j = 0; j < 3; j++) {
-            let pos = j + rowOffset;
-            arr.push(pos);
-        }
-        combos.push(Combo(arr));
-        rowOffset += 3;
-    }
-
-    //Column Combos
-    let colOffset = 0;
-    for(let i = 3; i < 6; i++) {
-        const arr = [];
-        for(let j = 0; j <= 6; j += 3) {
-            let pos = j + colOffset;
-            arr.push(pos);
-        }
-        combos.push(Combo(arr));
-        colOffset += 1;
-    }
-
-    combos.push( Combo( [0,4,8] ), Combo( [2,4,6] ) );
-
-    const getCombos = () => combos;
-
-    const printCombos = function() {
-        const combosWithPos = [];
-        for(const combo of combos) {
-            const pos = combo.getPos().slice(0);
-            let XCount = combo.getXCount();
-            let OCount = combo.getOCount();
-            pos.push(XCount, OCount);
-            combosWithPos.push(pos);
-        }
-    }
-
     return {
         getBoard,
         printBoard,
@@ -85,6 +100,7 @@ const Gameboard = function () {
 
         getCombos,
         printCombos,
+        init,
     };
 }
 
@@ -140,14 +156,6 @@ const Combo = function(arr) {
 }
 
 const gameController = function() {
-    let board;
-
-    function _init() {
-        board = Gameboard();
-    }
-
-    _init();
-
     //Player objects, that stores player name and marker
     const player = function(marker) {
         const playerName = "Player " + marker;
@@ -156,11 +164,19 @@ const gameController = function() {
     const playerX = player("X");
     const playerO = player("O");
 
-    let activePlayer = playerX;
+    const board = Gameboard();
+    let winner;
+    let activePlayer;
 
-    const getActivePlayer = function() {
-        return activePlayer;
+    function init() {
+        board.init();
+        winner = "";
+        activePlayer = playerX;
     }
+
+    init();
+
+    const getActivePlayer = () => activePlayer;
 
     const drawCell = function(player, pos) {
         const targetCell = board.getBoard()[pos];
@@ -177,10 +193,7 @@ const gameController = function() {
         }
         drawCell(getActivePlayer(), pos);
         board.printBoard();
-
-        //board.printBoard();
         addCounts();
-
         board.addMarkedCount();
         checkWinner();
 
@@ -225,7 +238,6 @@ const gameController = function() {
         }
     }
 
-    let winner = "";
     const getWinner = () => winner;
 
     const checkWinner = function() {
@@ -263,41 +275,46 @@ const gameController = function() {
         getWinner,
         isValidInput,
         isRoundEnd,
+
+        init,
     };
 };
 
 
 
-function screenController() {
+(function screenController() {
     const game = gameController();
+
+    let board = game.getBoard();
 
     //Cache DOM
     const boardDiv = document.querySelector('.gameboard');
-    const board = game.getBoard();
     const xTurn = document.querySelector('#xTurn');
     const oTurn = document.querySelector("#oTurn");
     const resultDiv = document.querySelector('.result');
     const winnerDiv = document.querySelector('.result > .winner');
 
-    function _init() {
-        gameController();
-        boardDiv.addEventListener('click', clickHandler);
-    }
+    render();
 
-    function _render() {
+    boardDiv.addEventListener('click', clickHandler);
+
+    function render() {
         updateBoard();
         updateActivePlayer();
     }
 
-    _init();
-    _render();
+    function resetRound() {
+        game.init();
+        board = game.getBoard();
+    }
 
     function clickHandler(e) {
         const targetIndex =  e.target.getAttribute("data-index");
+        
         if( !game.isValidInput(targetIndex) || game.isRoundEnd() ) return; //Do noting if input invalid OR board is full 
 
         game.playRound(targetIndex);
-        _render();
+        render();
 
         if(game.isRoundEnd()) {
             showWinner();
@@ -311,10 +328,12 @@ function screenController() {
             const cellBtn = document.createElement('button');
             cellBtn.classList.add('cell');
             cellBtn.setAttribute('data-index', index);
+
             const marker =  cell.getMarker();
             cellBtn.textContent =  ( !marker )
                                   ? ""
                                   : marker;
+                                  
             boardDiv.appendChild(cellBtn);
 
             if(cell.getIsWinningCell()) {
@@ -344,15 +363,17 @@ function screenController() {
     }
 
     function showResetBtn() {
+        resultDiv.textContent = "";
         const resetBtn = document.createElement('button');
         resetBtn.textContent = "Restart";
         resultDiv.appendChild(resetBtn);
         resetBtn.addEventListener('click', () => {
-            _init();
-            _render();
+            resetRound();
+            render();
         });
     }
-}
 
 
-screenController();
+})();
+
+
