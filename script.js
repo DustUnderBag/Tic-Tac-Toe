@@ -306,20 +306,21 @@ function screenController() {
     }
 
     function updateBoard() {
-        for(let i = 0; i < board.length; i++) {
-            const cell = board[i];
-
-            let marker = cell.getMarker();
-            if(marker === 0 ) marker = ""; //Jump to next iteration if the cell is empty.
-
-            let selector = `[data-index = "${i}"]`;
-            const cellDiv = document.querySelector(selector);
-            cellDiv.textContent = marker;
+        boardDiv.textContent = "";
+        board.forEach( (cell, index) => {
+            const cellBtn = document.createElement('button');
+            cellBtn.classList.add('cell');
+            cellBtn.setAttribute('data-index', index);
+            const marker =  cell.getMarker();
+            cellBtn.textContent =  ( !marker )
+                                  ? ""
+                                  : marker;
+            boardDiv.appendChild(cellBtn);
 
             if(cell.getIsWinningCell()) {
-                cellDiv.classList.add('winning-cell');
+                cellBtn.classList.add('winning-cell');
             }
-        }
+        } );
     }
 
     function updateActivePlayer() {
