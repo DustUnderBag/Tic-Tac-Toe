@@ -140,11 +140,14 @@ const Combo = function(arr) {
 }
 
 const gameController = function() {
-    const board = Gameboard();
-    const _init = function() {
-        board.printBoard();
-    } 
-    
+    let board;
+
+    function _init() {
+        board = Gameboard();
+    }
+
+    _init();
+
     //Player objects, that stores player name and marker
     const player = function(marker) {
         const playerName = "Player " + marker;
@@ -173,6 +176,7 @@ const gameController = function() {
             return;
         }
         drawCell(getActivePlayer(), pos);
+        board.printBoard();
 
         //board.printBoard();
         addCounts();
@@ -198,6 +202,13 @@ const gameController = function() {
             return false;
         }
         return true;
+    }
+
+    function isRoundEnd() {
+        if(winner) {
+            return true;
+        }
+        return false;
     }
 
     const addCounts = function() {
@@ -237,13 +248,6 @@ const gameController = function() {
         }
     }
 
-    function isRoundEnd() {
-        if(winner) {
-            return true;
-        }
-        return false;
-    }
-
     function setAllWinningCells(completedCombo) {
         for(const pos of completedCombo.getPos() ) {
             const cell = board.getBoard()[pos];
@@ -251,16 +255,15 @@ const gameController = function() {
         }
     }
 
-    _init();
-
     return {
         getActivePlayer,
         playRound,
         getBoard: board.getBoard,
 
         getWinner,
+        isValidInput,
         isRoundEnd,
-    }
+    };
 };
 
 
@@ -273,24 +276,32 @@ function screenController() {
     const board = game.getBoard();
     const xTurn = document.querySelector('#xTurn');
     const oTurn = document.querySelector("#oTurn");
+    const resultDiv = document.querySelector('.result');
     const winnerDiv = document.querySelector('.result > .winner');
 
-    _render();
+    function _init() {
+        gameController();
+        boardDiv.addEventListener('click', clickHandler);
+    }
 
     function _render() {
         updateBoard();
         updateActivePlayer();
     }
 
-    boardDiv.addEventListener('click', clickHandler);
+    _init();
+    _render();
 
     function clickHandler(e) {
         const targetIndex =  e.target.getAttribute("data-index");
+        if( !game.isValidInput(targetIndex) || game.isRoundEnd() ) return; //Do noting if input invalid OR board is full 
+
         game.playRound(targetIndex);
         _render();
 
         if(game.isRoundEnd()) {
             showWinner();
+            showResetBtn();
         }
     }
 
@@ -298,8 +309,8 @@ function screenController() {
         for(let i = 0; i < board.length; i++) {
             const cell = board[i];
 
-            const marker = cell.getMarker();
-            if(marker === 0 ) continue; //Jump to next iteration if the cell is empty.
+            let marker = cell.getMarker();
+            if(marker === 0 ) marker = ""; //Jump to next iteration if the cell is empty.
 
             let selector = `[data-index = "${i}"]`;
             const cellDiv = document.querySelector(selector);
@@ -326,12 +337,19 @@ function screenController() {
         const winner = game.getWinner();
         if(winner === "X" || winner === "O") {
             winnerDiv.textContent = `${winner} WINS!`;    
-            return;
         }else if(winner === "tie") {
             winnerDiv.textContent = `TIE!`;
-            return;
         }
-        
+    }
+
+    function showResetBtn() {
+        const resetBtn = document.createElement('button');
+        resetBtn.textContent = "Restart";
+        resultDiv.appendChild(resetBtn);
+        resetBtn.addEventListener('click', () => {
+            _init();
+            _render();
+        });
     }
 }
 
