@@ -115,8 +115,8 @@ function Cell() {
 
     const getMarker = () => marker;
 
-    const markCell = function(player) {
-        marker = player.marker;
+    const markCell = function(playerMarker) {
+        marker = playerMarker;
     }
 
     let isWinningCell = false;
@@ -159,12 +159,14 @@ const gameController = function() {
     //Player objects, that stores player name and marker
     const player = function(marker) {
         const playerName = "Player " + marker;
-        return {playerName, marker};
+        const type = "player";
+        return {playerName, marker, type};
     }
     const playerX = player("X");
-    const playerO = player("O");
+    const playerO = bot("O");
 
     const board = Gameboard();
+    const combos = board.getCombos();
     let winner;
     let activePlayer;
 
@@ -191,13 +193,29 @@ const gameController = function() {
         if( !isValidInput(pos) || isRoundEnd() ) {
             return;
         }
-        drawCell(getActivePlayer(), pos);
+
+        drawCell(activePlayer.marker, pos);
         board.printBoard();
         addCounts();
         board.addMarkedCount();
         checkWinner();
 
+        if(isRoundEnd()) return;
+
         switchActivePlayer();
+
+        if(activePlayer.marker === "O") {
+            let targetCellPos = playerO.takeCellPos(board.getBoard(), combos); 
+            
+            drawCell(activePlayer.marker, targetCellPos);
+
+            board.printBoard();
+            addCounts();
+            board.addMarkedCount();
+            checkWinner();
+
+            switchActivePlayer();
+        }
     }
 
     const isValidInput = function(pos) {
@@ -225,7 +243,7 @@ const gameController = function() {
     }
 
     const addCounts = function() {
-        for(const combo of board.getCombos() ) {
+        for(const combo of combos ) {
             let xCount = 0;
             let oCount = 0;
             for(const pos of combo.getPos()) {
@@ -241,7 +259,7 @@ const gameController = function() {
     const getWinner = () => winner;
 
     const checkWinner = function() {
-        for(const combo of board.getCombos()) {
+        for(const combo of combos) {
             let xCount = combo.getXCount();
             let oCount = combo.getOCount();
 
@@ -317,6 +335,7 @@ const gameController = function() {
         render();
 
         if(game.isRoundEnd()) {
+            console.log("Round Ends");
             showWinner();
             showResetBtn();
         }
@@ -373,7 +392,36 @@ const gameController = function() {
         });
     }
 
-
 })();
 
 
+function bot(marker) {
+    const playerName = "Player" + marker;
+    const type = "bot";
+
+    function findTargetCombo(combos) {
+        const availableCombos = combos.filter( 
+            (combo) => combo.getXCount() === 0 
+        );
+        
+        return availableCombos[0];
+    }    
+
+    function takeCellPos(board, combos) {
+        const targetCombo = findTargetCombo(combos);
+        const availablePos = targetCombo.getPos()
+            .filter( pos => board[pos].getMarker() === 0
+            );
+        //console.log(availablePos);
+        return availablePos[0];    
+    }
+
+    return {
+        playerName,
+        marker,
+        type,
+
+        
+        takeCellPos,
+    }
+}
