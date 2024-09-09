@@ -430,10 +430,9 @@ function bot(marker, level) {
     }    
 
     function takeCellPos() {
-        if( finishCombo() ) {
-            let finalPos = finishCombo();
-            console.log("finahPos: " + finalPos);
-            return finalPos;
+        if(finishCombo()) {
+            let pos = finishCombo();
+            return pos;
         }
 
         const targetCombo = findTargetCombo();
@@ -464,13 +463,14 @@ function bot(marker, level) {
                 break;
             }
         }
-        if( !finalCombo ) return; //Stop if no final combo is found.
+        if( !finalCombo ) return false; //Stop if no final combo is found.
         
-        finalCombo.getPos().forEach( pos => {
+        
+        for( let pos of finalCombo.getPos() ) {
             if( board[pos].getMarker() === 0 ) {
                 return pos;
             }
-        } );
+        }
     }
 
     return {
