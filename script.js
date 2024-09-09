@@ -204,8 +204,10 @@ const gameController = function() {
 
         switchActivePlayer();
 
-        if(activePlayer.marker === "O") {
-            let targetCellPos = playerO.takeCellPos(board.getBoard(), combos); 
+        if(activePlayer.marker === "O" && activePlayer.type === "bot") {
+            playerO.readBoard(board.getBoard());
+            playerO.readCombos(combos);
+            let targetCellPos = playerO.takeCellPos(); 
             
             drawCell(activePlayer.marker, targetCellPos);
 
@@ -399,7 +401,17 @@ function bot(marker) {
     const playerName = "Player" + marker;
     const type = "bot";
 
-    function findTargetCombo(combos) {
+    let board, combos;
+
+    function readBoard(newBoard) {
+        board = newBoard;
+    }
+
+    function readCombos(newCombos) {
+        combos = newCombos;
+    }
+
+    function findTargetCombo() {
         const availableCombos = combos.filter( 
             (combo) => combo.getXCount() === 0 
         );
@@ -407,8 +419,12 @@ function bot(marker) {
         return availableCombos[0];
     }    
 
-    function takeCellPos(board, combos) {
-        const targetCombo = findTargetCombo(combos);
+    function takeCellPos() {
+        const targetCombo = findTargetCombo();
+        console.log("Combo target: " + targetCombo);
+        if( !targetCombo ) {
+            return findRandomEmptyCell();;
+        } 
         const availablePos = targetCombo.getPos()
             .filter( pos => board[pos].getMarker() === 0
             );
@@ -416,12 +432,23 @@ function bot(marker) {
         return availablePos[0];    
     }
 
+    function findRandomEmptyCell() {
+        let availableCellPos = [];
+        board.forEach( (cell, index) => {
+            if(cell.getMarker()) return;
+            availableCellPos.push(index);
+        });
+        return availableCellPos[0];
+    }
+
     return {
         playerName,
         marker,
         type,
 
-        
+        readBoard,
+        readCombos,
+
         takeCellPos,
     }
 }
