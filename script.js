@@ -207,6 +207,7 @@ const gameController = function() {
         if(activePlayer.type === "bot") {
             activePlayer.readBoard(board.getBoard());
             activePlayer.readCombos(combos);
+
             let targetCellPos = activePlayer.takeCellPos(); 
             
             drawCell(activePlayer.marker, targetCellPos);
@@ -393,7 +394,6 @@ const gameController = function() {
             render();
         });
     }
-
 })();
 
 
@@ -404,7 +404,15 @@ function bot(marker, level) {
                        ? "X" : "O"; 
 
     let board, combos;
+    
+    let getSelfCount = marker === "X"
+                   ? "getXCount"
+                   : "getOCount";
 
+    let getEnemyCount = enemyMarker === "X"
+                    ? "getXCount"
+                    : "getOCount";
+                               
     function readBoard(newBoard) {
         board = newBoard;
     }
@@ -414,10 +422,7 @@ function bot(marker, level) {
     }
 
     function findTargetCombo() {
-        let getEnemyCount = enemyMarker === "X"
-                            ? "getXCount"
-                            : "getOCount";
-        const availableCombos = combos.filter( 
+        const availableCombos = combos.filter( //Look for rows that has no enemy's mark.
             (combo) => combo[getEnemyCount]() === 0 
         );
         
@@ -425,8 +430,13 @@ function bot(marker, level) {
     }    
 
     function takeCellPos() {
-        const targetCombo = findTargetCombo();
+        if( finishCombo() ) {
+            let finalPos = finishCombo();
+            console.log("finahPos: " + finalPos);
+            return finalPos;
+        }
 
+        const targetCombo = findTargetCombo();
         if( !targetCombo ) { //If can't find any availble combos.
             return findRandomEmptyCell(); //Get a random empty cell pos.
         } 
@@ -443,6 +453,24 @@ function bot(marker, level) {
             availableCellPos.push(index);
         });
         return availableCellPos[0];
+    }
+
+    //Complete a combo by taking the final remaining cell in a row where the bot has already taken 2 cells.
+    function finishCombo() {
+        let finalCombo;
+        for(let i = 0; i < combos.length; i++) {
+            if( combos[i][getSelfCount]() === 2 && combos[i][getEnemyCount]() === 0 ) {
+                finalCombo = combos[i];
+                break;
+            }
+        }
+        if( !finalCombo ) return; //Stop if no final combo is found.
+        
+        finalCombo.getPos().forEach( pos => {
+            if( board[pos].getMarker() === 0 ) {
+                return pos;
+            }
+        } );
     }
 
     return {
