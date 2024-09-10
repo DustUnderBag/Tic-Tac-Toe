@@ -430,10 +430,11 @@ function bot(marker, level) {
     }    
 
     function takeCellPos() {
-        if(finishCombo()) {
-            let pos = finishCombo();
-            return pos;
-        }
+        let finalCellInRow = finishCombo();
+        if( typeof finalCellInRow === 'number' ) return finalCellInRow;
+
+        let posToBlock = block();
+        if( typeof posToBlock === 'number' ) return posToBlock;
 
         const targetCombo = findTargetCombo();
         if( !targetCombo ) { //If can't find any availble combos.
@@ -457,17 +458,37 @@ function bot(marker, level) {
     //Complete a combo by taking the final remaining cell in a row where the bot has already taken 2 cells.
     function finishCombo() {
         let finalCombo;
-        for(let i = 0; i < combos.length; i++) {
-            if( combos[i][getSelfCount]() === 2 && combos[i][getEnemyCount]() === 0 ) {
-                finalCombo = combos[i];
+        for(let combo of combos) {
+            if( combo[getSelfCount]() === 2 && combo[getEnemyCount]() === 0 ) {
+                finalCombo = combo;
                 break;
             }
         }
-        if( !finalCombo ) return false; //Stop if no final combo is found.
         
+        if( !finalCombo ) return; //Stop if no final combo is found.
         
         for( let pos of finalCombo.getPos() ) {
             if( board[pos].getMarker() === 0 ) {
+                return pos;
+            }
+        }
+    }
+
+    function block() {
+        let comboToBlock;
+        for(let combo of combos) {
+            if( combo[getEnemyCount]() === 2 && combo[getSelfCount]() === 0 ) {
+                comboToBlock = combo;
+                break;
+            }
+        }
+
+        if(!comboToBlock) return;
+
+        console.log("Enemy has two in this row: " + comboToBlock.getPos());
+        for(let pos of comboToBlock.getPos() ) {
+            if( board[pos].getMarker() === 0) {
+                console.log("Should block this: " + pos);
                 return pos;
             }
         }
