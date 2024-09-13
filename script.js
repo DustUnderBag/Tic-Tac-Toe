@@ -9,12 +9,12 @@ const Gameboard = function () {
     const rowsNum = 3;
     const board = [];   
     const combos = [];   
-    let markedCount = 0;
+    let markCount = 0;
 
     init();
 
     function init() {
-        markedCount = 0;
+        markCount = 0;
         _makeBoardCells();
         _generateCombos();
     }
@@ -59,6 +59,8 @@ const Gameboard = function () {
         combos.push( Combo( [0,4,8] ), Combo( [2,4,6] ) );
     }
 
+    const getMarkCount = () => markCount;
+    const addMarkCount = () => markCount++;
 
     const getCombos = () => combos;
 
@@ -80,26 +82,16 @@ const Gameboard = function () {
         console.log(boardWithCellValue[6],boardWithCellValue[7],boardWithCellValue[8]);
     }
 
-    const addMarkedCount = function() {
-        ++markedCount;
-    }
-
-    const getMarkedCount = () => markedCount;
-
-    const isFull = function() {
-        return (markedCount === 9) ? true : false;
-    }
-
     return {
         getBoard,
         printBoard,
 
-        addMarkedCount,
-        getMarkedCount,
-        isFull,
-
         getCombos,
         printCombos,
+
+        getMarkCount,
+        addMarkCount,
+
         init,
     };
 }
@@ -156,6 +148,9 @@ const Combo = function(arr) {
 }
 
 const gameController = function() {
+    const board = Gameboard();
+    const combos = board.getCombos();
+
     //Player objects, that stores player name and marker
     const player = function(marker) {
         const playerName = "Player " + marker;
@@ -163,12 +158,9 @@ const gameController = function() {
         return {playerName, marker, type};
     }
     const playerX = player("X");
-    const playerO = bot("O");
+    const playerO = bot("O",board);
 
-    const board = Gameboard();
-    const combos = board.getCombos();
-    let winner;
-    let activePlayer;
+    let winner, activePlayer;
 
     function init() {
         board.init();
@@ -197,7 +189,7 @@ const gameController = function() {
         drawCell(activePlayer.marker, pos);
         board.printBoard();
         addCounts();
-        board.addMarkedCount();
+        board.addMarkCount();
         checkWinner();
 
         if(isRoundEnd()) return;
@@ -205,16 +197,13 @@ const gameController = function() {
         switchActivePlayer();
 
         if(activePlayer.type === "bot") {
-            activePlayer.readBoard(board.getBoard());
-            activePlayer.readCombos(combos);
-
             let targetCellPos = activePlayer.takeCellPos(); 
             
             drawCell(activePlayer.marker, targetCellPos);
 
             board.printBoard();
             addCounts();
-            board.addMarkedCount();
+            board.addMarkCount();
             checkWinner();
 
             switchActivePlayer();
@@ -240,6 +229,7 @@ const gameController = function() {
 
     function isRoundEnd() {
         if(winner) {
+            console.log("Round ends.", "winner: " + winner);
             return true;
         }
         return false;
@@ -274,7 +264,7 @@ const gameController = function() {
                 setAllWinningCells(combo);
                 return;
             }
-            if(!winner && board.isFull()) {
+            if(!winner && board.getMarkCount() === 9) {
                 winner = "tie";
                 return;
             }
@@ -292,6 +282,7 @@ const gameController = function() {
         getActivePlayer,
         playRound,
         getBoard: board.getBoard,
+        getMarkCount: board.getMarkCount,
 
         getWinner,
         isValidInput,
@@ -338,7 +329,6 @@ const gameController = function() {
         render();
 
         if(game.isRoundEnd()) {
-            console.log("Round Ends");
             showWinner();
             showResetBtn();
         }
@@ -397,13 +387,15 @@ const gameController = function() {
 })();
 
 
-function bot(marker, level) {
+function bot(marker, Gameboard) {
     const playerName = "Player" + marker;
     const type = "bot";
     const enemyMarker = marker === "O"
                        ? "X" : "O"; 
 
-    let board, combos;
+    const game = Gameboard;
+    const board = game.getBoard();
+    const combos = game.getCombos();
     
     let getSelfCount = marker === "X"
                    ? "getXCount"
@@ -412,14 +404,6 @@ function bot(marker, level) {
     let getEnemyCount = enemyMarker === "X"
                     ? "getXCount"
                     : "getOCount";
-                               
-    function readBoard(newBoard) {
-        board = newBoard;
-    }
-
-    function readCombos(newCombos) {
-        combos = newCombos;
-    }
 
     function findTargetCombo() {
         const availableCombos = combos.filter( //Look for rows that has no enemy's mark.
@@ -435,6 +419,11 @@ function bot(marker, level) {
 
         let posToBlock = block();
         if( typeof posToBlock === 'number' ) return posToBlock;
+
+        if(game.getMarkCount() === 1) {
+            if(board[4].getMarker() === enemyMarker) return blockCenterFork();
+        }
+    
 
         const targetCombo = findTargetCombo();
         if( !targetCombo ) { //If can't find any availble combos.
@@ -494,14 +483,18 @@ function bot(marker, level) {
         }
     }
 
+    function blockCenterFork() {
+        //const centerPos = 5;
+        const cornersPos = [0, 2, 6, 8];
+        let randomPos = Math.floor( (Math.random() * cornersPos.length) );
+        console.log("Center taken by opponent, now take corner: " + cornersPos[randomPos]);
+        return cornersPos[randomPos];
+    }
+
     return {
         playerName,
         marker,
         type,
-
-        readBoard,
-        readCombos,
-
         takeCellPos,
     }
 }
