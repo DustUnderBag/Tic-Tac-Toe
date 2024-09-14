@@ -66,3 +66,7 @@ body {
 .player-turn > .active{
     color:red;
 }
+
+.winner {
+    font-size: 1.6rem;
+}

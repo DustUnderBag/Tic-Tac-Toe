@@ -309,6 +309,7 @@ const gameController = function() {
     render();
 
     boardDiv.addEventListener('click', clickHandler);
+    showResetBtn();
 
     function render() {
         updateBoard();
@@ -330,7 +331,6 @@ const gameController = function() {
 
         if(game.isRoundEnd()) {
             showWinner();
-            showResetBtn();
         }
     }
 
@@ -367,6 +367,7 @@ const gameController = function() {
 
     function showWinner() {
         const winner = game.getWinner();
+        console.log("the winner is" + winner);
         if(winner === "X" || winner === "O") {
             winnerDiv.textContent = `${winner} WINS!`;    
         }else if(winner === "tie") {
@@ -375,13 +376,13 @@ const gameController = function() {
     }
 
     function showResetBtn() {
-        resultDiv.textContent = "";
         const resetBtn = document.createElement('button');
         resetBtn.textContent = "Restart";
         resultDiv.appendChild(resetBtn);
         resetBtn.addEventListener('click', () => {
             resetRound();
             render();
+            winnerDiv.textContent = "";
         });
     }
 })();
