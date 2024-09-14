@@ -420,13 +420,17 @@ function bot(marker, Gameboard) {
         let posToBlock = block();
         if( typeof posToBlock === 'number' ) return posToBlock;
 
-         //If bot's playing the 2ND move.
+         //If bot's playing the 2ND move, responding to opponent's openning move.
         if(game.getMarkCount() === 1) {
-            //Block Center Fork: Take any corner if the center is taken by opponent.
+            //Block Center Fork: If opponent plays center, take any corner.
             if(board[4].getMarker() === enemyMarker) return takeAnyCorner();
             
-            //Block Corner Fork: Take center if any corner is taken by opponent.
+            //Block Corner Fork: If opponent plays corner, take center.
             if( cornerTakenByOpp() ) return takeCenter();
+
+            //Block Edge Fork: If opponent plays edge, take the opposite edge.
+            let edgeTaken = edgeTakenByOpp();
+            if( typeof edgeTaken === "number") return takeOppositeEdge(edgeTaken);
         }
     
 
@@ -504,6 +508,35 @@ function bot(marker, Gameboard) {
         for(let corner of corners) {
             if(board[corner].getMarker() === enemyMarker) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    function takeOppositeEdge(edgeTaken) {
+        // Edge Pairs = [1, 7] & [3, 5];
+        let oppositeEdge;
+        switch(edgeTaken) {
+            case 1:
+                oppositeEdge = 7;
+                break;
+            case 7:
+                oppositeEdge = 1;
+                break;
+            case 3:
+                oppositeEdge = 5;
+                break;
+            case 5:
+                oppositeEdge = 3;
+        }
+        return oppositeEdge;
+    }
+
+    function edgeTakenByOpp() {
+        const edges = [1, 3, 5, 7]; 
+        for(const edge of edges) {
+            if(board[edge].getMarker() === enemyMarker) {
+                return edge;
             }
         }
         return false;
