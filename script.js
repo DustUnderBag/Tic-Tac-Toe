@@ -420,8 +420,13 @@ function bot(marker, Gameboard) {
         let posToBlock = block();
         if( typeof posToBlock === 'number' ) return posToBlock;
 
+         //If bot's playing the 2ND move.
         if(game.getMarkCount() === 1) {
-            if(board[4].getMarker() === enemyMarker) return blockCenterFork();
+            //Block Center Fork: Take any corner if the center is taken by opponent.
+            if(board[4].getMarker() === enemyMarker) return takeAnyCorner();
+            
+            //Block Corner Fork: Take center if any corner is taken by opponent.
+            if( cornerTakenByOpp() ) return takeCenter();
         }
     
 
@@ -483,12 +488,25 @@ function bot(marker, Gameboard) {
         }
     }
 
-    function blockCenterFork() {
-        //const centerPos = 5;
+    function takeAnyCorner() {
         const cornersPos = [0, 2, 6, 8];
         let randomPos = Math.floor( (Math.random() * cornersPos.length) );
         console.log("Center taken by opponent, now take corner: " + cornersPos[randomPos]);
         return cornersPos[randomPos];
+    }
+
+    function takeCenter() {
+        return 4;
+    }
+
+    function cornerTakenByOpp() {
+        const corners = [0, 2, 6, 8];
+        for(let corner of corners) {
+            if(board[corner].getMarker() === enemyMarker) {
+                return true;
+            }
+        }
+        return false;
     }
 
     return {
