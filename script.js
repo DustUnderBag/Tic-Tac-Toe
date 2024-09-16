@@ -158,17 +158,19 @@ const gameController = function() {
         return {playerName, marker, type};
     }
     const playerX = player("X");
-    const playerO = bot("O",board);
+    const playerO = player("O");
+    //const playerO = bot("O",board);
 
-    let winner, activePlayer;
+    let winner = "";
+    let activePlayer = playerX; 
 
-    function init() {
+    function reset() {
         board.init();
         winner = "";
         activePlayer = playerX;
     }
 
-    init();
+    reset();
 
     const getActivePlayer = () => activePlayer;
 
@@ -227,22 +229,14 @@ const gameController = function() {
         return true;
     }
 
-    function isRoundEnd() {
-        if(winner) {
-            console.log("Round ends.", "winner: " + winner);
-            return true;
-        }
-        return false;
-    }
-
     const addCounts = function() {
         for(const combo of combos ) {
             let xCount = 0;
             let oCount = 0;
             for(const pos of combo.getPos()) {
                 let mark = board.getBoard()[pos].getMarker();
-                if(mark === "X") xCount++;
-                if(mark === "O") oCount++;
+                if(mark === "X") ++xCount;
+                if(mark === "O") ++oCount;
             }
             combo.setXCount(xCount);
             combo.setOCount(oCount);
@@ -251,23 +245,33 @@ const gameController = function() {
 
     const getWinner = () => winner;
 
-    const checkWinner = function() {
+    function checkWinner() {
+        //console.log("mark Count: " + board.getMarkCount());
         for(const combo of combos) {
             let xCount = combo.getXCount();
             let oCount = combo.getOCount();
-
-            winner = (xCount === 3) ? "X"
-                    :(oCount === 3) ? "O"
-                    : "";
-
-            if(winner) {
+            
+            if(xCount == 3) {
+                winner = "X";
                 setAllWinningCells(combo);
                 return;
-            }
-            if(!winner && board.getMarkCount() === 9) {
-                winner = "tie";
+            }else if(oCount == 3) {
+                winner = "O";
+                setAllWinningCells(combo);
                 return;
-            }
+            }           
+        }   
+        if(board.getMarkCount() === 9) {
+            winner = "tie";                
+            return;
+        }
+    }
+
+    function isRoundEnd() {
+        if( winner == "" ) {
+            return false;   
+        }else{
+            return true;
         }
     }
 
@@ -288,7 +292,7 @@ const gameController = function() {
         isValidInput,
         isRoundEnd,
 
-        init,
+        reset,
     };
 };
 
@@ -317,8 +321,11 @@ const gameController = function() {
     }
 
     function resetRound() {
-        game.init();
+        game.reset();
         board = game.getBoard();
+
+        render();
+        winnerDiv.textContent = "";
     }
 
     function clickHandler(e) {
@@ -357,7 +364,7 @@ const gameController = function() {
     function updateActivePlayer() {
         const activePlayerMarker = game.getActivePlayer().marker;
         if(activePlayerMarker === "X") {
-            oTurn.classList.remove("active")
+            oTurn.classList.remove("active")        
             xTurn.classList.add("active");
         } else {
             xTurn.classList.remove("active")
@@ -367,7 +374,6 @@ const gameController = function() {
 
     function showWinner() {
         const winner = game.getWinner();
-        console.log("the winner is" + winner);
         if(winner === "X" || winner === "O") {
             winnerDiv.textContent = `${winner} WINS!`;    
         }else if(winner === "tie") {
@@ -379,11 +385,7 @@ const gameController = function() {
         const resetBtn = document.createElement('button');
         resetBtn.textContent = "Restart";
         resultDiv.appendChild(resetBtn);
-        resetBtn.addEventListener('click', () => {
-            resetRound();
-            render();
-            winnerDiv.textContent = "";
-        });
+        resetBtn.addEventListener('click', resetRound);
     }
 })();
 
