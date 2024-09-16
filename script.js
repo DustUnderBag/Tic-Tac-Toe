@@ -199,17 +199,21 @@ const gameController = function() {
         switchActivePlayer();
 
         if(activePlayer.type === "bot") {
-            let targetCellPos = activePlayer.takeCellPos(); 
-            
-            drawCell(activePlayer.marker, targetCellPos);
-
-            board.printBoard();
-            addCounts();
-            board.addMarkCount();
+            botPlays();
+        
             checkWinner();
-
+            if(isRoundEnd()) return;
             switchActivePlayer();
         }
+    }
+
+    function botPlays() {
+        let targetCellPos = activePlayer.takeCellPos();             
+        drawCell(activePlayer.marker, targetCellPos);
+
+        board.printBoard();
+        addCounts();
+        board.addMarkCount();
     }
 
     const isValidInput = function(pos) {
@@ -551,11 +555,10 @@ function bot(marker, Gameboard) {
     }
 
     function edgeTakenByOpp() {
-        const edges = [1, 3, 5, 7]; 
-        const edgeTaken = [];
+        const edges = [1, 3, 5, 7];       
         for(const edge of edges) {
             if(board[edge].getMarker() === enemyMarker) {
-                edgeTaken.push(edge);
+                return edge;
             }
         }
     }
