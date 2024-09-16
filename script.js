@@ -157,9 +157,19 @@ const gameController = function() {
         const type = "player";
         return {playerName, marker, type};
     }
-    const playerX = player("X");
+
+    //Player VS Player
+    //const playerX = player("X");
     //const playerO = player("O");
-    const playerO = bot("O",board);
+
+    //PlayerX VS BotO
+    //const playerX = player("X");
+    //const playerO = bot("O",board);
+
+
+    //BotX VS PlayerO
+    const playerX = bot("X", board);
+    const playerO = player("O");
 
     let winner = "";
     let activePlayer = playerX; 
@@ -168,22 +178,30 @@ const gameController = function() {
         board.init();
         winner = "";
         activePlayer = playerX;
+
+        if(activePlayer.type === "bot") {
+            botPlays();
+        
+            checkWinner();
+            if(isRoundEnd()) return;
+            switchActivePlayer();
+        }
     }
 
     reset();
 
     const getActivePlayer = () => activePlayer;
 
-    const drawCell = function(player, pos) {
+    function drawCell(player, pos) {
         const targetCell = board.getBoard()[pos];
         targetCell.markCell(player);
     }
 
-    const switchActivePlayer = function() {
+    function switchActivePlayer() {
         activePlayer = (activePlayer == playerX) ? playerO : playerX;
     }
 
-    const playRound = function(pos) {
+    function playRound(pos) {
         if( !isValidInput(pos) || isRoundEnd() ) {
             return;
         }
@@ -216,7 +234,7 @@ const gameController = function() {
         board.addMarkCount();
     }
 
-    const isValidInput = function(pos) {
+    function isValidInput(pos) {
         if(!pos) return false;
 
         if(pos > 8 || pos < 0) {
@@ -233,7 +251,7 @@ const gameController = function() {
         return true;
     }
 
-    const addCounts = function() {
+    function addCounts() {
         for(const combo of combos ) {
             let xCount = 0;
             let oCount = 0;
