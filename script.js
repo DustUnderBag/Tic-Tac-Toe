@@ -158,8 +158,8 @@ const gameController = function() {
         return {playerName, marker, type};
     }
     const playerX = player("X");
-    const playerO = player("O");
-    //const playerO = bot("O",board);
+    //const playerO = player("O");
+    const playerO = bot("O",board);
 
     let winner = "";
     let activePlayer = playerX; 
@@ -435,6 +435,15 @@ function bot(marker, Gameboard) {
             let edgeTaken = edgeTakenByOpp();
             if( typeof edgeTaken === "number") return takeOppositeEdge(edgeTaken);
         }
+
+        if(game.getMarkCount() === 3) {
+            //If opponent took diagonal corners, while bot has the center, bot should take an edge.
+            if( diagonalTakenByOpp() ) {
+                console.log("diagonals are taken by opponent, take any edge now");
+                const edges = [1, 3, 5, 7];
+                return edges[ Math.floor(Math.random() * 4) ];
+            }
+        }
     
 
         const targetCombo = findTargetCombo();
@@ -537,11 +546,22 @@ function bot(marker, Gameboard) {
 
     function edgeTakenByOpp() {
         const edges = [1, 3, 5, 7]; 
+        const edgeTaken = [];
         for(const edge of edges) {
             if(board[edge].getMarker() === enemyMarker) {
-                return edge;
+                edgeTaken.push(edge);
             }
         }
+    }
+
+    function diagonalTakenByOpp() {
+        //Return true if diagonalCorners taken by opponent, and the center is taken by bot itself.
+        
+        if(board[4].getMarker() !== marker) return false; //False if center is not taken by bot.
+
+        if( board[0].getMarker() === enemyMarker && board[8].getMarker() === enemyMarker ) return true;
+        if( board[2].getMarker() === enemyMarker && board[6].getMarker() === enemyMarker ) return true;
+
         return false;
     }
 
