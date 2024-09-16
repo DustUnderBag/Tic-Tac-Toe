@@ -423,6 +423,12 @@ function bot(marker, Gameboard) {
         let posToBlock = block();
         if( typeof posToBlock === 'number' ) return posToBlock;
 
+
+        if(game.getMarkCount() === 0) {
+            const corners = [0, 2, 6, 8];
+            return corners[ getRandomItem(corners.length) ];
+        }
+        
          //If bot's playing the 2ND move, responding to opponent's openning move.
         if(game.getMarkCount() === 1) {
             //Block Center Fork: If opponent plays center, take any corner.
@@ -441,7 +447,7 @@ function bot(marker, Gameboard) {
             if( diagonalTakenByOpp() ) {
                 console.log("diagonals are taken by opponent, take any edge now");
                 const edges = [1, 3, 5, 7];
-                return edges[ Math.floor(Math.random() * 4) ];
+                return edges[ getRandomItem(edges.length) ];
             }
         }
     
@@ -462,7 +468,7 @@ function bot(marker, Gameboard) {
             if(cell.getMarker()) return;
             availableCellPos.push(index);
         });
-        return availableCellPos[0];
+        return availableCellPos[getRandomItem(availableCellPos.length)];
     }
 
     //Complete a combo by taking the final remaining cell in a row where the bot has already taken 2 cells.
@@ -505,10 +511,10 @@ function bot(marker, Gameboard) {
     }
 
     function takeAnyCorner() {
-        const cornersPos = [0, 2, 6, 8];
-        let randomPos = Math.floor( (Math.random() * cornersPos.length) );
-        console.log("Center taken by opponent, now take corner: " + cornersPos[randomPos]);
-        return cornersPos[randomPos];
+        const corners = [0, 2, 6, 8];
+        let randomPos = getRandomItem(corners.length);
+        console.log("Center taken by opponent, now take corner: " + corners[randomPos]);
+        return corners[ randomPos ];
     }
 
     function takeCenter() {
@@ -563,6 +569,11 @@ function bot(marker, Gameboard) {
         if( board[2].getMarker() === enemyMarker && board[6].getMarker() === enemyMarker ) return true;
 
         return false;
+    }
+
+
+    function getRandomItem(length) {
+        return Math.floor( Math.random() * length ) ;
     }
 
     return {
