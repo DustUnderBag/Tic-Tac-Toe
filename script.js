@@ -374,7 +374,7 @@ const gameController = function() {
             cellBtn.textContent =  ( !marker )
                                   ? ""
                                   : marker;
-                                  
+            
             boardDiv.appendChild(cellBtn);
 
             if(cell.getIsWinningCell()) {
@@ -447,8 +447,22 @@ function bot(marker, Gameboard) {
 
 
         if(game.getMarkCount() === 0) {
+            //Best opening move is to play corners.
             const corners = [0, 2, 6, 8];
             return corners[ getRandomItem(corners.length) ];
+        }
+
+        if(game.getMarkCount() === 2 && board[4].getMarker() === enemyMarker) {
+            //If bot has a corner and opponent has the center, 
+            //bot should take the corner opposite to original corner to form a diagonal.
+            let cornerTaken;
+            const corners = [0, 2, 6 ,8];
+            for(let corner of corners) {
+                if(board[corner].getMarker() === marker) cornerTaken = corner;
+            }
+            if(typeof cornerTaken === "number") {
+                return makeDiagonal(cornerTaken);
+            }
         }
         
          //If bot's playing the 2ND move, responding to opponent's openning move.
@@ -579,6 +593,24 @@ function bot(marker, Gameboard) {
                 return edge;
             }
         }
+    }
+
+    function makeDiagonal(cornerTaken) {
+        let oppositeCorner;
+        switch(cornerTaken) {
+            case 0:
+                oppositeCorner = 8;
+                break;
+            case 2:
+                oppositeCorner = 6;
+                break;
+            case 6:
+                oppositeCorner = 2;
+                break;
+            case 8:
+                oppositeCorner = 0;
+        }
+        return oppositeCorner;
     }
 
     function diagonalTakenByOpp() {
