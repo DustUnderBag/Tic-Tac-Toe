@@ -168,8 +168,11 @@ const gameController = function() {
 
 
     //BotX VS PlayerO
+    //const playerX = bot("X", board);
+    //const playerO = player("O");
+
     const playerX = bot("X", board);
-    const playerO = player("O");
+    const playerO = bot("O", board);
 
     let winner = "";
     let activePlayer = playerX; 
@@ -179,7 +182,7 @@ const gameController = function() {
         winner = "";
         activePlayer = playerX;
 
-        if(activePlayer.type === "bot") {
+        while(activePlayer.type === "bot" && !isRoundEnd()) {
             botPlays();
         
             checkWinner();
