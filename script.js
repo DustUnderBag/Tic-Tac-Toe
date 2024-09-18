@@ -490,12 +490,14 @@ function bot(marker, Gameboard) {
 
         const targetCombo = findTargetCombo();
         if( !targetCombo ) { //If can't find any availble combos.
+            console.log("No combos, get random one");
             return findRandomEmptyCell(); //Get a random empty cell pos.
-        } 
+        }
+         
         const availablePos = targetCombo.getPos()
             .filter( pos => board[pos].getMarker() === 0
         );
-        return availablePos[0];    
+        return availablePos[getRandomItem(availablePos.length)];    
     }
 
     function findRandomEmptyCell() {
