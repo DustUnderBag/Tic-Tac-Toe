@@ -648,3 +648,37 @@ function bot(marker, Gameboard) {
         takeCellPos,
     }
 }
+
+
+function gameInitializer() {
+    //DOM cache
+    const modeWindow = document.querySelector('#mode-window');
+    const optionBtns = document.querySelectorAll('#mode-window button');
+    const gameDiv = document.querySelector('.game');
+
+    let mode;
+
+    optionBtns.forEach( btn => {
+        btn.addEventListener('click', e => {
+            chooseMode(e);
+            modeWindow.style.display = "none";
+            gameDiv.style.display = "flex";
+        });
+    });
+    
+    function chooseMode(e) {
+        if(!e.target.id) return;
+        let option = e.target.id;
+        
+        switch(option) {
+            case "against-bot": 
+                mode = 0;
+                break;
+            case "against-friend":
+                mode = 1;
+        }
+        console.log("mode is: " + option);
+    }
+}
+
+gameInitializer();

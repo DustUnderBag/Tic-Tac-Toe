@@ -1,19 +1,49 @@
-* {
-    margin: 0;
-    padding: 0;
+/* Default Style */
+*, *::before, *::after {
     box-sizing: border-box;
-}
+  }
+
+  * {
+    margin: 0; 
+    padding: 0;
+  }
+
+  body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  input, button, textarea, select {
+    font: inherit;
+  }
+
+  p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+  }
+
+  #root, #__next {
+    isolation: isolate;
+  }
+
 
 
 h1 {
-    color: rgb(238, 0, 0);
+    font-size: 2rem;
+    color: rgb(0, 0, 0);
 }
 
-body {
-    display: flex;
+.game {
+    display: none;
+    /*display: flex; */
     flex-direction: column;
     align-items: center;
 }
+
 .gameboard {
     border: 2px solid black;
     width: 600px;
@@ -69,4 +99,27 @@ body {
 
 .winner {
     font-size: 1.6rem;
+}
+
+
+#mode-window, #robot-window {
+    display: flex;
+    height: 500px;
+    border: 1px solid black;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#mode-window .options {
+    display: flex;
+    margin-top: 2rem;
+    flex-direction: column;
+    gap: 1rem;    
+}
+
+#mode-window button {
+    width: 300px;
+    height: 120px;
 }
