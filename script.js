@@ -147,38 +147,27 @@ const Combo = function(arr) {
     };
 }
 
-const gameController = function() {
+const gameController = function(
+    playerX_name, playerX_type,
+    playerO_name, playerO_type,
+) {
     const board = Gameboard();
     const combos = board.getCombos();
 
     //Player objects, that stores player name and marker
-    const player = function(marker) {
-        const playerName = "Player " + marker;
+    const player = function(playerName, marker) {
         const type = "player";
         return {playerName, marker, type};
     }
 
-    //Player VS Player
-    //const playerX = player("X");
-    //const playerO = player("O");
-
-    //PlayerX VS BotO
-    //const playerX = player("X");
-    //const playerO = bot("O",board);
-
-
-    //BotX VS PlayerO
-    //const playerX = bot("X", board);
-    //const playerO = player("O");
-
-    const playerX = bot("X", board);
-    const playerO = bot("O", board);
-
+    let playerX, playerO;
     let winner = "";
     let activePlayer = playerX; 
 
     function reset() {
         board.init();
+        initializePlayers();
+
         winner = "";
         activePlayer = playerX;
 
@@ -192,6 +181,22 @@ const gameController = function() {
     }
 
     reset();
+
+    function initializePlayers() {
+        if(playerX_type === "player" && playerO_type === "player") {
+            //Player VS Player
+            playerX = player(playerX_name, "X");
+            playerO = player(playerO_name, "O");
+        }else if(playerX_type === "player" && playerO_type === "bot") {
+            //Player VS Bot
+            playerX = player(playerX_name, "X");
+            playerO = bot("O", board);
+         }else if(playerX_type === "bot" && playerO_type === "player") {
+            //Bot VS Player
+            playerX = bot("X", board);
+            playerO = player(playerO_name, "O");
+         }
+    }
 
     const getActivePlayer = () => activePlayer;
 
@@ -324,7 +329,9 @@ const gameController = function() {
 
 
 (function screenController() {
-    const game = gameController();
+    const game = gameController("Player X", "bot",
+                                "Bot O", "player"
+                               );
 
     let board = game.getBoard();
 
