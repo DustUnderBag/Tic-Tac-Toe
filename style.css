@@ -111,6 +111,10 @@ h1 {
     align-items: center;
 }
 
+#robot-window {
+    display: none;
+}
+
 
 #mode-window .options {
     display: flex;

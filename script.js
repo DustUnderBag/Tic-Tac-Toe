@@ -653,22 +653,41 @@ function bot(marker, Gameboard) {
 function gameInitializer() {
     //DOM cache
     const modeWindow = document.querySelector('#mode-window');
-    const optionBtns = document.querySelectorAll('#mode-window button');
+    const modeOptions = document.querySelectorAll('#mode-window button');
+    
+    const robotWindow = document.querySelector('#robot-window');
+    const sideOptions = document.querySelectorAll('input[name="side"]');
+    const difficultyOptions = document.querySelectorAll('input[name="diffculty"]');
+    const startBtn_robot = document.querySelector('#robot-window button.start');
+
     const gameDiv = document.querySelector('.game');
 
-    let mode;
+    let mode, side, difficulty;
 
-    optionBtns.forEach( btn => {
-        btn.addEventListener('click', e => {
-            chooseMode(e);
-            modeWindow.style.display = "none";
-            gameDiv.style.display = "flex";
+    //Bind events
+    modeOptions.forEach( option => 
+        option.addEventListener('click', chooseMode)
+    );
+
+    sideOptions.forEach( option => {
+        option.addEventListener('input', e => {
+            side = e.target.value;
+            console.log("side: " + side);
         });
     });
+
+    difficultyOptions.forEach( option => {
+        option.addEventListener('input', e => {
+            difficulty = e.target.value;
+            console.log("difficulty: " + difficulty);
+        });
+    });
+
+    startBtn_robot.addEventListener('click', startGame);
     
-    function chooseMode(e) {
-        if(!e.target.id) return;
-        let option = e.target.id;
+    
+    function chooseMode() {
+        let option = this.id;
         
         switch(option) {
             case "against-bot": 
@@ -677,8 +696,17 @@ function gameInitializer() {
             case "against-friend":
                 mode = 1;
         }
-        console.log("mode is: " + option);
+        modeWindow.style.display = "none";
+        robotWindow.style.display = "flex";
+        console.log("mode: " + option);
     }
+
+    function startGame() {
+        robotWindow.style.display = "none";
+        gameDiv.style.display = "flex";
+    }
+
+
 }
 
 gameInitializer();
