@@ -147,10 +147,8 @@ const Combo = function(arr) {
     };
 }
 
-const gameController = function(
-    playerX_name, playerX_type,
-    playerO_name, playerO_type,
-) {
+const gameController = function(gameMode = 0, playerSide = "X", diffculty = "normal",
+                                playerX_name = "Player X", playerO_name = "Player O" ) {
     const board = Gameboard();
     const combos = board.getCombos();
 
@@ -159,14 +157,14 @@ const gameController = function(
         const type = "player";
         return {playerName, marker, type};
     }
-
+    
     let playerX, playerO;
     let winner = "";
     let activePlayer = playerX; 
 
     function reset() {
         board.init();
-        initializePlayers();
+        setPlayers();
 
         winner = "";
         activePlayer = playerX;
@@ -182,20 +180,22 @@ const gameController = function(
 
     reset();
 
-    function initializePlayers() {
-        if(playerX_type === "player" && playerO_type === "player") {
-            //Player VS Player
+    function setPlayers() {
+        console.log("Mode " + gameMode);
+        if(gameMode === 0) {
+            if(playerSide === "X") {
+                playerX = player(playerX_name, "X");
+                playerO = bot("O", board, diffculty);
+            }else {
+                playerX = bot("X", board, diffculty);
+                playerO = player(playerO_name, "O");
+            }
+        }
+        
+        if(gameMode === 1) {
             playerX = player(playerX_name, "X");
             playerO = player(playerO_name, "O");
-        }else if(playerX_type === "player" && playerO_type === "bot") {
-            //Player VS Bot
-            playerX = player(playerX_name, "X");
-            playerO = bot("O", board);
-         }else if(playerX_type === "bot" && playerO_type === "player") {
-            //Bot VS Player
-            playerX = bot("X", board);
-            playerO = player(playerO_name, "O");
-         }
+        }
     }
 
     const getActivePlayer = () => activePlayer;
@@ -326,13 +326,7 @@ const gameController = function(
     };
 };
 
-
-
-(function screenController() {
-    const game = gameController("Player X", "bot",
-                                "Bot O", "player"
-                               );
-
+function screenController(game) {
     let board = game.getBoard();
 
     //Cache DOM
@@ -419,11 +413,11 @@ const gameController = function(
         resultDiv.appendChild(resetBtn);
         resetBtn.addEventListener('click', resetRound);
     }
-})();
+}
 
 
-function bot(marker, Gameboard) {
-    const playerName = "Player" + marker;
+function bot(marker, Gameboard, diffculty) {
+    const playerName = "Bot " + marker + " " +diffculty.toUpperCase();
     const type = "bot";
     const enemyMarker = marker === "O"
                        ? "X" : "O"; 
@@ -650,7 +644,7 @@ function bot(marker, Gameboard) {
 }
 
 
-function gameSettings() {
+(function gameSettings() {   
     //DOM cache
     const modeWindow = document.querySelector('#mode-window');
     const modeOptions = document.querySelectorAll('#mode-window button');
@@ -695,6 +689,8 @@ function gameSettings() {
     }
 
     function startGame_bot() {
+        mode = 0;
+        
         const side_checked = document.querySelector('input[name="side"]:checked');
         const difficulty_checked = document.querySelector('input[name="diffculty"]:checked');
         
@@ -715,9 +711,12 @@ function gameSettings() {
 
         robotWindow.style.display = "none";
         gameDiv.style.display = "flex";
+
+        startGame();
     }
 
     function startGame_friend() {
+        mode = 1;
         friendWindow.style.display = "none";
         gameDiv.style.display = "flex";
         playerX_name = playerXName_input.value;
@@ -726,17 +725,26 @@ function gameSettings() {
         if(!playerO_name) playerO_name = "Player O"
 
         console.log(playerX_name + " vs " + playerO_name);
+        startGame()
+    }
+
+    function startGame() {
+        const game = gameController( mode, playerSide, difficulty,
+            playerX_name, playerO_name);
+        screenController(game);
     }
 
     const getMode = () => mode;
-    const getBotSettings = () => {playerSide, difficulty}
-    const getPlayerNames = () => {playerX_name, playerO_name};
+    const getPlayerSide = () => playerSide;
+    const getDifficulty = () => difficulty;
+    const getPlayerX_name = () => playerX_name;
+    const getPlayerO_name = () => playerO_name;
 
     return {
         getMode,
-        getBotSettings,
-        getPlayerNames,
+        getPlayerSide,
+        getDifficulty,
+        getPlayerX_name,
+        getPlayerO_name,
     }
-}
-
-gameSettings();
+})();
