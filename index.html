@@ -38,7 +38,7 @@
         
         <div class="options">
             <p>
-                <input type="radio" name="side" id="sideX" value="X">
+                <input type="radio" name="side" id="sideX" value="X" checked>
                 <label for="sideX">X</label>
             </p>
             <p>
@@ -53,12 +53,29 @@
                 <label for="easy">Easy</label>
             </p>
             <p>
-                <input type="radio" name="diffculty" id="normal" value="normal">
+                <input type="radio" name="diffculty" id="normal" value="normal" checked>
                 <label for="normal">Normal</label>
             </p>
             <p>
                 <input type="radio" name="diffculty" id="hard" value="hard">
                 <label for="hard">Hard</label>
+            </p>
+        </div>
+
+        <button type='button' class="start">Start</button>
+    </div>
+
+    <div id="friend-window">
+        <h2>Play with a friend</h1>
+
+        <div class="name-inputs">
+            <p>
+                <label for="playerX-name">X</label>
+                <input type="text" name="playerX-name" id="playerX-name" placeholder="Player X" value="Player X">
+            </p>            
+            <p>
+                <label for="playerO-name">O</label>
+                <input type="text" name="playerO-name" id="playerO-name" placeholder="Player O" value="Player O">
             </p>
         </div>
 

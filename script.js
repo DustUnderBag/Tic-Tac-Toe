@@ -660,9 +660,15 @@ function gameInitializer() {
     const difficultyOptions = document.querySelectorAll('input[name="diffculty"]');
     const startBtn_robot = document.querySelector('#robot-window button.start');
 
+    const friendWindow = document.querySelector('#friend-window');
+    const playerXName_input = document.querySelector('input[name="playerX-name"]');
+    const playerOName_input = document.querySelector('input[name="playerO-name"]');
+    const startBtn_friend = document.querySelector('#friend-window button.start');
+    
     const gameDiv = document.querySelector('.game');
 
     let mode, side, difficulty;
+    let playerX_name, playerO_name;
 
     //Bind events
     modeOptions.forEach( option => 
@@ -683,29 +689,41 @@ function gameInitializer() {
         });
     });
 
-    startBtn_robot.addEventListener('click', startGame);
-    
-    
+    startBtn_robot.addEventListener('click', startGame_bot);
+    startBtn_friend.addEventListener('click', startGame_friend);
+
+    //Event handlers
     function chooseMode() {
+        modeWindow.style.display = "none";
+
         let option = this.id;
-        
         switch(option) {
             case "against-bot": 
                 mode = 0;
+                robotWindow.style.display = "flex";
                 break;
             case "against-friend":
                 mode = 1;
-        }
-        modeWindow.style.display = "none";
-        robotWindow.style.display = "flex";
+                friendWindow.style.display = "flex";
+        }           
         console.log("mode: " + option);
     }
 
-    function startGame() {
+    function startGame_bot() {
         robotWindow.style.display = "none";
         gameDiv.style.display = "flex";
     }
 
+    function startGame_friend() {
+        friendWindow.style.display = "none";
+        gameDiv.style.display = "flex";
+        playerX_name = playerXName_input.value;
+        playerO_name = playerOName_input.value;
+        if(!playerX_name) playerX_name = "Player X"
+        if(!playerO_name) playerO_name = "Player O"
+        console.log("X: " + playerX_name);
+        console.log("O: " + playerO_name);
+    }
 
 }
 

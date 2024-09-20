@@ -102,16 +102,15 @@ h1 {
 }
 
 
-#mode-window, #robot-window {
+#mode-window, #robot-window, #friend-window {
     display: flex;
-    height: 500px;
     border: 1px solid black;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-#robot-window {
+#robot-window, #friend-window {
     display: none;
 }
 
@@ -120,7 +119,7 @@ h1 {
     display: flex;
     margin-top: 2rem;
     flex-direction: column;
-    gap: 1rem;    
+    gap: 1rem;      
 }
 
 #mode-window button {
