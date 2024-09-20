@@ -650,7 +650,7 @@ function bot(marker, Gameboard) {
 }
 
 
-function gameInitializer() {
+function gameSettings() {
     //DOM cache
     const modeWindow = document.querySelector('#mode-window');
     const modeOptions = document.querySelectorAll('#mode-window button');
@@ -669,7 +669,7 @@ function gameInitializer() {
     let mode, playerSide, difficulty;
     let playerX_name, playerO_name;
 
-    
+
     //Bind events
     modeOptions.forEach( option => 
         option.addEventListener('click', chooseMode)
@@ -739,4 +739,4 @@ function gameInitializer() {
     }
 }
 
-gameInitializer();
+gameSettings();
