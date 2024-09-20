@@ -733,18 +733,4 @@ function bot(marker, Gameboard, diffculty) {
             playerX_name, playerO_name);
         screenController(game);
     }
-
-    const getMode = () => mode;
-    const getPlayerSide = () => playerSide;
-    const getDifficulty = () => difficulty;
-    const getPlayerX_name = () => playerX_name;
-    const getPlayerO_name = () => playerO_name;
-
-    return {
-        getMode,
-        getPlayerSide,
-        getDifficulty,
-        getPlayerX_name,
-        getPlayerO_name,
-    }
 })();
