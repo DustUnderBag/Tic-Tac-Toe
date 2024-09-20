@@ -22,6 +22,10 @@
     font: inherit;
   }
 
+  label {
+    display: block;
+  }
+
   p, h1, h2, h3, h4, h5, h6 {
     overflow-wrap: break-word;
   }
@@ -31,10 +35,23 @@
   }
 
 
+:root {
+    --background-color: #ff3838;
+    --primary-color: #ffae00;
+    --border-radius: 24px;
+}
+
+html, body {
+    height: 100%
+}
 
 h1 {
+    font-size: 3.6rem;    
+    margin-top: 2rem;   
+}
+
+h2 {
     font-size: 2rem;
-    color: rgb(0, 0, 0);
 }
 
 .game {
@@ -103,11 +120,19 @@ h1 {
 
 
 #mode-window, #robot-window, #friend-window {
+    background-color: var(--background-color);
+    color: var(--primary-color);
     display: flex;
+    height: 100%;
     border: 1px solid black;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 100px;
+}
+
+h2 {
+    font-size: 2rem;
 }
 
 #robot-window, #friend-window {
@@ -125,4 +150,93 @@ h1 {
 #mode-window button {
     width: 300px;
     height: 120px;
+}
+
+#robot-window input[type="radio"] {
+    appearance: none;
+    display: block;
+}
+
+button.start {
+    border: none;
+    outline: none;
+
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--background-color);
+    background-color: var(--primary-color);
+    
+    width: 480px;
+    border-radius: var(--border-radius);
+
+    margin-top: auto;
+    margin-bottom: 30px;
+    padding: 10px 16px;
+
+}
+
+.sides {
+    display: flex;
+    gap: 2.5rem;
+    margin-block: 50px;
+}
+
+.sides input + label {
+    width: 240px;
+    height: 240px;
+    border-radius: var(--border-radius);
+    transition: background 0.1s linear;
+    &[for="sideX"] {
+        background: url(./img/cross_yellow.svg) transparent;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 75%;    
+    }
+
+    &[for="sideO"] {
+        background: url(./img/circle_yellow.svg) transparent;    
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 75%;    
+    }
+}
+
+.sides input:checked + label,
+.sides input:hover + label {
+    background-color: var(--primary-color);
+
+    &[for="sideX"] {
+        background-image: url(./img/cross_red.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 75%;    
+    }
+
+    &[for="sideO"] {
+        background-image: url(./img/circle_red.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 75%;    
+    }
+    
+}
+
+.difficulties {
+    margin-top: 35px;
+}
+
+.difficulties label{
+    margin-top: 2rem;
+    padding: 6px 12px;
+    font-size: 2rem;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.difficulties input:checked + label,
+.difficulties input:hover + label{
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    transition: var(--background-color) 0.1s linear;
 }
