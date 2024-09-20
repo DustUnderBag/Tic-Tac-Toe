@@ -656,8 +656,6 @@ function gameInitializer() {
     const modeOptions = document.querySelectorAll('#mode-window button');
     
     const robotWindow = document.querySelector('#robot-window');
-    const sideOptions = document.querySelectorAll('input[name="side"]');
-    const difficultyOptions = document.querySelectorAll('input[name="diffculty"]');
     const startBtn_robot = document.querySelector('#robot-window button.start');
 
     const friendWindow = document.querySelector('#friend-window');
@@ -667,28 +665,15 @@ function gameInitializer() {
     
     const gameDiv = document.querySelector('.game');
 
-    let mode, side, difficulty;
+
+    let mode, playerSide, difficulty;
     let playerX_name, playerO_name;
 
+    
     //Bind events
     modeOptions.forEach( option => 
         option.addEventListener('click', chooseMode)
     );
-
-    sideOptions.forEach( option => {
-        option.addEventListener('input', e => {
-            side = e.target.value;
-            console.log("side: " + side);
-        });
-    });
-
-    difficultyOptions.forEach( option => {
-        option.addEventListener('input', e => {
-            difficulty = e.target.value;
-            console.log("difficulty: " + difficulty);
-        });
-    });
-
     startBtn_robot.addEventListener('click', startGame_bot);
     startBtn_friend.addEventListener('click', startGame_friend);
 
@@ -710,6 +695,24 @@ function gameInitializer() {
     }
 
     function startGame_bot() {
+        const side_checked = document.querySelector('input[name="side"]:checked');
+        const difficulty_checked = document.querySelector('input[name="diffculty"]:checked');
+        
+        playerSide = side_checked.value;
+        difficulty = difficulty_checked.value;
+
+        if(playerSide === "X") {
+            playerX_name = "Player X"
+            playerO_name = "Bot O " + difficulty.toUpperCase();
+        }else {
+            playerX_name = "Bot X " + difficulty.toUpperCase();
+            playerO_name = "Player O";
+        }
+
+        console.log("side: " + playerSide);
+        console.log("diff: " + difficulty);
+        console.log(playerX_name + " vs " + playerO_name);
+
         robotWindow.style.display = "none";
         gameDiv.style.display = "flex";
     }
@@ -721,10 +724,19 @@ function gameInitializer() {
         playerO_name = playerOName_input.value;
         if(!playerX_name) playerX_name = "Player X"
         if(!playerO_name) playerO_name = "Player O"
-        console.log("X: " + playerX_name);
-        console.log("O: " + playerO_name);
+
+        console.log(playerX_name + " vs " + playerO_name);
     }
 
+    const getMode = () => mode;
+    const getBotSettings = () => {playerSide, difficulty}
+    const getPlayerNames = () => {playerX_name, playerO_name};
+
+    return {
+        getMode,
+        getBotSettings,
+        getPlayerNames,
+    }
 }
 
 gameInitializer();
