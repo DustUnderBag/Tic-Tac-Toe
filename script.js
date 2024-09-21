@@ -375,10 +375,18 @@ function screenController(game) {
             cellBtn.setAttribute('data-index', index);
 
             const marker =  cell.getMarker();
-            cellBtn.textContent =  ( !marker )
+
+            if( marker === "X" ) {
+                cellBtn.classList.add('xMark');
+            }else if( marker === "O" ) {
+                cellBtn.classList.add('oMark');
+            }
+
+            
+            /*cellBtn.textContent =  ( !marker )
                                   ? ""
                                   : marker;
-            
+            */
             boardDiv.appendChild(cellBtn);
 
             if(cell.getIsWinningCell()) {
