@@ -5,7 +5,6 @@
 
   * {
     margin: 0; 
-    padding: 0;
   }
 
   body {
@@ -42,7 +41,7 @@
 }
 
 html, body {
-    height: 100vh
+    height: 100dvh;
 }
 
 .game {
@@ -113,30 +112,35 @@ html, body {
 #mode-window, #robot-window, #friend-window {
     background-color: var(--background-color);
     color: var(--primary-color);
-    display: flex;
     height: 100%;
-    border: 1px solid black;
+    padding-block: 50px;
+
+    display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding-top: 100px;
-    padding-bottom: 100px;
 }
 
-h1 {
-    font-size: 3rem;
-    margin-top: 1rem;
+#mode-window {
+    justify-content: center;
 }
 
-h2 {
-    font-size: 1.6rem;
-    border-bottom: 2px var(--primary-color) solid;
+#robot-window, #friend-window {
+    justify-content: space-between;
+
+    & h1 {
+        font-size: 3rem;
+        
+    }
+    
+    & h2 {
+        font-size: 1.6rem;
+        border-bottom: 2px var(--primary-color) solid;
+    }
 }
 
 #robot-window, #friend-window {
     display: none;
 }
-
 
 #mode-window .options {
     display: flex;
@@ -156,7 +160,7 @@ h2 {
     height: 70px;
     content: '';
     background-image: url(./img/bot-icon-yellow.svg);
-    background-size: 130%;
+    background-size: 120%;
     background-position: center;
     margin-inline: auto;
     margin-bottom: 0;
@@ -170,7 +174,6 @@ h2 {
 .sides {
     display: flex;
     gap: 2.5rem;
-    margin-top: 0.6rem;
 }
 
 .sides input + label {
@@ -179,7 +182,7 @@ h2 {
     border-radius: var(--border-radius);
     border: 1px solid transparent;
 
-    transition: background 0.1s, border 0.1s;
+    transition: border 0.1s;
     &[for="sideX"] {
         background: url(./img/cross_yellow.svg) transparent;
         background-position: center;
@@ -233,7 +236,7 @@ h2 {
     font-weight: bold;
     border-radius: 5px;
     border: 1px solid transparent;
-    transition: border 0.2s linear;
+    transition: border 0.1s linear;
 }
 
 .difficulties input:checked + label {
@@ -243,11 +246,15 @@ h2 {
 
 .difficulties input:hover + label {
     border: 4px var(--primary-color) solid;
+    font-size: 1.7rem;
 }
 
 button.start {
-    border: none;
     outline: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     font-size: 3rem;
     font-weight: bold;
@@ -255,10 +262,10 @@ button.start {
     background-color: var(--primary-color);
     
     width: 340px;
-    height: 100px;
+    height: 80px;
     border: 1px solid var(--primary-color);
     border-radius: var(--border-radius);
-
+    
     margin-top: 1.2rem;
     transition: all .2s linear;
 
@@ -267,4 +274,62 @@ button.start {
         color: var(--primary-color);
         border-width: 10px;
     }
+}
+
+#friend-window h2::before {
+    display: block;
+    width: 70px;
+    height: 70px;
+    content: '';
+    background-image: url(./img/multiplayer-icon.svg);
+    background-size: 100%;
+    background-position: center;
+    margin-inline: auto;
+    margin-bottom: 0;
+}
+
+#friend-window p + p{
+    margin-top: 1.4rem;
+}
+
+#friend-window label {
+    width: 140px;
+    height: 140px;
+    margin-inline: auto;
+
+    &[for="playerX-name"] {
+        background: url(./img/cross_yellow.svg) transparent;    
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 75%; 
+    }
+
+    &[for="playerO-name"] {
+        background: url(./img/circle_yellow.svg) transparent;    
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 75%; 
+    }
+    
+}
+
+#friend-window input {
+    /*Style reset*/
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+
+    display: block;
+    width: 200px;
+    height: 3rem;
+    margin-inline: auto;
+
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    background-color: transparent;
+    
+    border: 3px solid var(--primary-color);
+    border-radius: 6px;
 }
