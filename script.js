@@ -160,7 +160,12 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
     
     let playerX, playerO;
     let winner = "";
-    let activePlayer = playerX; 
+    let activePlayer = playerX;
+
+    let xScore = 0;
+    let oScore = 0;
+    const getXScore = () => xScore;
+    const getOScore = () => oScore;
 
     function reset() {
         board.init();
@@ -168,6 +173,11 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
 
         winner = "";
         activePlayer = playerX;
+    }
+
+    function nextRound() {
+        reset();
+        switchActivePlayer();
     }
 
     function setPlayers() {
@@ -263,10 +273,12 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
             
             if(xCount == 3) {
                 winner = "X";
+                xScore ++;
                 setAllWinningCells(combo);
                 return;
             }else if(oCount == 3) {
                 winner = "O";
+                oScore ++;
                 setAllWinningCells(combo);
                 return;
             }           
@@ -302,6 +314,7 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
         isValidInput,
         isRoundEnd,
 
+        getXScore, getOScore,
         reset,
     };
 };
@@ -313,6 +326,8 @@ function screenController(game) {
     const boardDiv = document.querySelector('.gameboard');
     const xTurn = document.querySelector('#xTurn');
     const oTurn = document.querySelector("#oTurn");
+    const xScore = document.querySelector('#xScore');
+    const oScore = document.querySelector('#oScore');
     const restartBtn = document.querySelector(".game button.restart");
     const winnerDiv = document.querySelector('.result > .winner');
 
@@ -359,6 +374,7 @@ function screenController(game) {
 
         if(game.isRoundEnd()) {
             showWinner();
+            updateScores();
             return;
         }
 
@@ -366,14 +382,17 @@ function screenController(game) {
             setTimeout( () => {
                 botPlays();
                 render();
+                
+                if(game.isRoundEnd()) {
+                    showWinner();
+                    updateScores();
+                }
             }, 600);
         }
     }
 
     function botPlays() {
-        console.log("bot plays running");
         let targetIndex = game.getActivePlayer().takeCellPos();
-        console.log("target" + targetIndex);
         game.playRound(targetIndex);
     }
 
@@ -409,6 +428,11 @@ function screenController(game) {
             xTurn.classList.remove("active")
             oTurn.classList.add("active");
         }
+    }
+
+    function updateScores() {
+        xScore.textContent = game.getXScore();
+        oScore.textContent = game.getOScore();
     }
 
     function showWinner() {
@@ -678,7 +702,7 @@ function bot(marker, Gameboard, diffculty) {
 
     //Event handlers
     function chooseMode() {
-        //modeWindow.style.display = "none";
+        modeWindow.style.display = "none";
 
         let option = this.id;
         switch(option) {
