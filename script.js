@@ -216,7 +216,7 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
     }
 
     function isValidInput(pos) {
-        if(!pos) return false;
+        if(typeof pos === "number") return true;
 
         if(pos > 8 || pos < 0) {
             console.log("Selected cell is beyond scope."); //Prohibit non-existing cell selection.
@@ -333,7 +333,7 @@ function screenController(game) {
 
     function clickHandler(e) {
         if( game.getActivePlayer().type === "bot" ) return;
-        
+
         const targetIndex =  e.target.getAttribute("data-index");
         
         if( !game.isValidInput(targetIndex) || game.isRoundEnd() ) return; //Do noting if input invalid OR board is full 
