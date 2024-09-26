@@ -160,6 +160,27 @@ button.cell {
     font-size: 1.6rem;
 }
 
+.nav-buttons {
+    width: min(85vw, 500px);
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-buttons .restart{
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0px;
+    outline: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    background: none;
+
+    &:hover {
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--primary-color);
+    }
+}
+
 #mode-window, #robot-window, #friend-window {
     background-color: var(--background-color);
     color: var(--primary-color);

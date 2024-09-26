@@ -11,9 +11,9 @@ const Gameboard = function () {
     const combos = [];   
     let markCount = 0;
 
-    init();
+    reset();
 
-    function init() {
+    function reset() {
         markCount = 0;
         _makeBoardCells();
         _generateCombos();
@@ -92,7 +92,7 @@ const Gameboard = function () {
         getMarkCount,
         addMarkCount,
 
-        init,
+        reset,
     };
 }
 
@@ -159,20 +159,18 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
     }
     
     let playerX, playerO;
-    let winner = "";
+    setPlayers();
     let activePlayer = playerX;
 
+    let winner = "";
     let xScore = 0;
     let oScore = 0;
     const getXScore = () => xScore;
     const getOScore = () => oScore;
 
     function reset() {
-        board.init();
-        setPlayers();
-
+        board.reset();
         winner = "";
-        activePlayer = playerX;
     }
 
     function nextRound() {
@@ -227,12 +225,14 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
         board.addMarkCount();
         checkWinner();
 
-        if(isRoundEnd()) return;
-
+        if(isRoundEnd()) {
+            return;
+        }
         switchActivePlayer();
     }
 
     function isValidInput(pos) {
+        if(pos === null) return false;
         if(typeof pos === "number") return true;
 
         if(pos > 8 || pos < 0) {
@@ -315,7 +315,7 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
         isRoundEnd,
 
         getXScore, getOScore,
-        reset,
+        reset, nextRound,
     };
 };
 
@@ -328,11 +328,21 @@ function screenController(game) {
     const oTurn = document.querySelector("#oTurn");
     const xScore = document.querySelector('#xScore');
     const oScore = document.querySelector('#oScore');
+
     const restartBtn = document.querySelector(".game button.restart");
+    const nextRndBtn = document.querySelector(".game button.nextRnd");
     const winnerDiv = document.querySelector('.result > .winner');
 
     boardDiv.addEventListener('click', clickHandler);
-    restartBtn.addEventListener('click', resetRound);
+    restartBtn.addEventListener('click', () => {
+        game.reset();
+        resetRound();
+    });
+    nextRndBtn.addEventListener('click', () => {
+        if(!game.isRoundEnd()) return;
+        game.nextRound();
+        resetRound();
+    });
 
     resetRound();
 
@@ -342,7 +352,6 @@ function screenController(game) {
     }
 
     function resetRound() {
-        game.reset();
         board = game.getBoard();
         winnerDiv.textContent = "";
 
@@ -366,7 +375,6 @@ function screenController(game) {
         if( game.getActivePlayer().type === "bot" ) return;
 
         const targetIndex =  e.target.getAttribute("data-index");
-        
         if( !game.isValidInput(targetIndex) || game.isRoundEnd() ) return; //Do noting if input invalid OR board is full 
 
         game.playRound(targetIndex);
@@ -377,7 +385,7 @@ function screenController(game) {
             updateScores();
             return;
         }
-
+        console.log("type " + game.getActivePlayer().type + " " + game.getActivePlayer().marker);
         if( game.getActivePlayer().type === "bot" ) {
             setTimeout( () => {
                 botPlays();
