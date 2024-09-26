@@ -161,6 +161,7 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
     let playerX, playerO;
     setPlayers();
     let activePlayer = playerX;
+    let firstPlayer = playerX;
 
     let winner = "";
     let xScore = 0;
@@ -171,11 +172,14 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
     function reset() {
         board.reset();
         winner = "";
+        activePlayer = firstPlayer;
     }
 
     function nextRound() {
-        reset();
+        board.reset();
+        winner = "";
         switchActivePlayer();
+        firstPlayer = activePlayer;
     }
 
     function setPlayers() {
@@ -354,20 +358,26 @@ function screenController(game) {
     function resetRound() {
         board = game.getBoard();
         winnerDiv.textContent = "";
+        nextRndBtn.style.display = "none";
 
         render();    
 
         if(game.getActivePlayer().type === "bot") {
-            let interval = 600;
             const playInt = setInterval(() => {
                 botPlays();
                 render();
 
-                if(game.isRoundEnd() || game.getActivePlayer().type !== "bot" ) {
+                if(game.getActivePlayer().type !== "bot" ) {
                     clearInterval(playInt);
+                    return;
                 }
 
-            }, interval);
+                if(game.isRoundEnd()) {
+                    clearInterval(playInt);
+                    nextRndBtn.style.display = "block";
+                    return;
+                }                
+            }, 500);
         }
     }
 
@@ -383,9 +393,10 @@ function screenController(game) {
         if(game.isRoundEnd()) {
             showWinner();
             updateScores();
+            nextRndBtn.style.display = "block";
             return;
         }
-        console.log("type " + game.getActivePlayer().type + " " + game.getActivePlayer().marker);
+
         if( game.getActivePlayer().type === "bot" ) {
             setTimeout( () => {
                 botPlays();
@@ -394,6 +405,7 @@ function screenController(game) {
                 if(game.isRoundEnd()) {
                     showWinner();
                     updateScores();
+                    nextRndBtn.style.display = "block";
                 }
             }, 600);
         }
