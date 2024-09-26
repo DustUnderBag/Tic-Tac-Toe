@@ -308,7 +308,10 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
         }
     }
 
+    const getGameMode = () => gameMode;
+
     return {
+        getGameMode,
         getActivePlayer,
         playRound,
         getBoard: board.getBoard,
@@ -359,13 +362,19 @@ function screenController(game) {
     function resetRound() {
         board = game.getBoard();
         winnerDiv.textContent = "";
+        
         restartBtn.style.display = "block";
         nextRndBtn.style.display = "none";
 
+        //Don't show restartBtn when bot plays against bot.
+        if(game.getGameMode() == 2) restartBtn.style.display = "none"; 
+        
         render();    
 
+        let playInt;
+        if(playInt) clearInterval(playInt);
         if(game.getActivePlayer().type === "bot") {
-            const playInt = setInterval(() => {
+            playInt = setInterval(() => {
                 botPlays();
                 render();
 
@@ -738,6 +747,7 @@ function bot(marker, Gameboard, diffculty) {
             case "against-friend":
                 mode = 1;
                 friendWindow.style.display = "flex";
+                break;
             case "bot-against-bot":
                 mode = 2;
                 startGame_twoBots();
