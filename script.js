@@ -332,6 +332,8 @@ function screenController(game) {
     }
 
     function clickHandler(e) {
+        if( game.getActivePlayer().type === "bot" ) return;
+        
         const targetIndex =  e.target.getAttribute("data-index");
         
         if( !game.isValidInput(targetIndex) || game.isRoundEnd() ) return; //Do noting if input invalid OR board is full 
