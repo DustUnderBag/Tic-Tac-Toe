@@ -313,13 +313,13 @@ function screenController(game) {
     const boardDiv = document.querySelector('.gameboard');
     const xTurn = document.querySelector('#xTurn');
     const oTurn = document.querySelector("#oTurn");
-    const resultDiv = document.querySelector('.result');
+    const restartBtn = document.querySelector(".game button.restart");
     const winnerDiv = document.querySelector('.result > .winner');
 
     boardDiv.addEventListener('click', clickHandler);
+    restartBtn.addEventListener('click', resetRound);
 
     resetRound();
-    showResetBtn();
 
     function render() {
         updateBoard();
@@ -418,13 +418,6 @@ function screenController(game) {
         }else if(winner === "tie") {
             winnerDiv.textContent = `TIE!`;
         }
-    }
-
-    function showResetBtn() {
-        const resetBtn = document.createElement('button');
-        resetBtn.textContent = "Restart";
-        resultDiv.appendChild(resetBtn);
-        resetBtn.addEventListener('click', resetRound);
     }
 }
 
@@ -685,7 +678,7 @@ function bot(marker, Gameboard, diffculty) {
 
     //Event handlers
     function chooseMode() {
-        modeWindow.style.display = "none";
+        //modeWindow.style.display = "none";
 
         let option = this.id;
         switch(option) {
