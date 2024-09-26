@@ -180,11 +180,18 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
                 playerX = bot("X", board, diffculty);
                 playerO = player(playerO_name, "O");
             }
+            return;
         }
         
         if(gameMode === 1) {
             playerX = player(playerX_name, "X");
             playerO = player(playerO_name, "O");
+            return;
+        }
+
+        if(gameMode === 2) {
+            playerX = bot("X", board, diffculty);
+            playerO = bot("O", board, diffculty);
         }
     }
 
@@ -323,12 +330,21 @@ function screenController(game) {
         game.reset();
         board = game.getBoard();
         winnerDiv.textContent = "";
-        //console.log("type: " + game.getActivePlayer().type );
+
+        render();    
 
         if(game.getActivePlayer().type === "bot") {
-            botPlays();
+            let interval = 600;
+            const playInt = setInterval(() => {
+                botPlays();
+                render();
+
+                if(game.isRoundEnd() || game.getActivePlayer().type !== "bot" ) {
+                    clearInterval(playInt);
+                }
+
+            }, interval);
         }
-        render();       
     }
 
     function clickHandler(e) {
@@ -347,12 +363,10 @@ function screenController(game) {
         }
 
         if( game.getActivePlayer().type === "bot" ) {
-            console.log("type: " + game.getActivePlayer().type );
-            
             setTimeout( () => {
                 botPlays();
                 render();
-            }, 300);
+            }, 600);
         }
     }
 
@@ -662,7 +676,6 @@ function bot(marker, Gameboard, diffculty) {
     let mode, playerSide, difficulty;
     let playerX_name, playerO_name;
 
-
     //Bind events
     modeOptions.forEach( option => 
         option.addEventListener('click', chooseMode)
@@ -683,6 +696,9 @@ function bot(marker, Gameboard, diffculty) {
             case "against-friend":
                 mode = 1;
                 friendWindow.style.display = "flex";
+            case "bot-against-bot":
+                mode = 2;
+                startGame_twoBots();
         }           
         console.log("mode: " + option);
     }
@@ -724,7 +740,17 @@ function bot(marker, Gameboard, diffculty) {
         if(!playerO_name) playerO_name = "Player O"
 
         console.log(playerX_name + " vs " + playerO_name);
-        startGame()
+        startGame();
+    }
+
+    function startGame_twoBots() {
+        mode = 2;
+        gameDiv.style.display = "flex";
+
+        difficulty = "normal";
+        playerX_name = "Bot X " + difficulty.toUpperCase();
+        playerO_name = "Bot O " + difficulty.toUpperCase();
+        startGame();
     }
 
     function startGame() {
