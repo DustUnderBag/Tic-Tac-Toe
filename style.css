@@ -163,7 +163,6 @@ button.cell {
 .nav-buttons {
     width: min(85vw, 500px);
     display: flex;
-    justify-content: space-between;
 }
 
 .nav-buttons .restart{
@@ -179,6 +178,11 @@ button.cell {
         color: var(--primary-color);
         border-bottom: 2px solid var(--primary-color);
     }
+}
+
+.nav-buttons .nextRnd {
+    margin-left: auto;
+    margin-right: 0;
 }
 
 #mode-window, #robot-window, #friend-window {

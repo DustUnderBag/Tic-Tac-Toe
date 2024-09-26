@@ -339,6 +339,7 @@ function screenController(game) {
 
     boardDiv.addEventListener('click', clickHandler);
     restartBtn.addEventListener('click', () => {
+        if(game.isRoundEnd()) return; //Can't reset game if round has ended.
         game.reset();
         resetRound();
     });
@@ -358,6 +359,7 @@ function screenController(game) {
     function resetRound() {
         board = game.getBoard();
         winnerDiv.textContent = "";
+        restartBtn.style.display = "block";
         nextRndBtn.style.display = "none";
 
         render();    
@@ -374,6 +376,7 @@ function screenController(game) {
 
                 if(game.isRoundEnd()) {
                     clearInterval(playInt);
+                    restartBtn.style.display = "none";
                     nextRndBtn.style.display = "block";
                     return;
                 }                
@@ -393,6 +396,7 @@ function screenController(game) {
         if(game.isRoundEnd()) {
             showWinner();
             updateScores();
+            restartBtn.style.display = "none";
             nextRndBtn.style.display = "block";
             return;
         }
@@ -405,6 +409,7 @@ function screenController(game) {
                 if(game.isRoundEnd()) {
                     showWinner();
                     updateScores();
+                    restartBtn.style.display = "none";
                     nextRndBtn.style.display = "block";
                 }
             }, 600);
