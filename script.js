@@ -168,17 +168,7 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
 
         winner = "";
         activePlayer = playerX;
-
-        while(activePlayer.type === "bot" && !isRoundEnd()) {
-            botPlays();
-        
-            checkWinner();
-            if(isRoundEnd()) return;
-            switchActivePlayer();
-        }
     }
-
-    reset();
 
     function setPlayers() {
         console.log("Mode " + gameMode);
@@ -223,23 +213,6 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
         if(isRoundEnd()) return;
 
         switchActivePlayer();
-
-        if(activePlayer.type === "bot") {
-            botPlays();
-        
-            checkWinner();
-            if(isRoundEnd()) return;
-            switchActivePlayer();
-        }
-    }
-
-    function botPlays() {
-        let targetCellPos = activePlayer.takeCellPos();             
-        drawCell(activePlayer.marker, targetCellPos);
-
-        board.printBoard();
-        addCounts();
-        board.addMarkCount();
     }
 
     function isValidInput(pos) {
@@ -336,9 +309,9 @@ function screenController(game) {
     const resultDiv = document.querySelector('.result');
     const winnerDiv = document.querySelector('.result > .winner');
 
-    render();
-
     boardDiv.addEventListener('click', clickHandler);
+
+    resetRound();
     showResetBtn();
 
     function render() {
@@ -349,9 +322,13 @@ function screenController(game) {
     function resetRound() {
         game.reset();
         board = game.getBoard();
-
-        render();
         winnerDiv.textContent = "";
+        //console.log("type: " + game.getActivePlayer().type );
+
+        if(game.getActivePlayer().type === "bot") {
+            botPlays();
+        }
+        render();       
     }
 
     function clickHandler(e) {
@@ -364,7 +341,24 @@ function screenController(game) {
 
         if(game.isRoundEnd()) {
             showWinner();
+            return;
         }
+
+        if( game.getActivePlayer().type === "bot" ) {
+            console.log("type: " + game.getActivePlayer().type );
+            
+            setTimeout( () => {
+                botPlays();
+                render();
+            }, 300);
+        }
+    }
+
+    function botPlays() {
+        console.log("bot plays running");
+        let targetIndex = game.getActivePlayer().takeCellPos();
+        console.log("target" + targetIndex);
+        game.playRound(targetIndex);
     }
 
     function updateBoard() {
@@ -382,11 +376,6 @@ function screenController(game) {
                 cellBtn.classList.add('oMark');
             }
 
-            
-            /*cellBtn.textContent =  ( !marker )
-                                  ? ""
-                                  : marker;
-            */
             boardDiv.appendChild(cellBtn);
 
             if(cell.getIsWinningCell()) {
@@ -742,3 +731,5 @@ function bot(marker, Gameboard, diffculty) {
         screenController(game);
     }
 })();
+
+
