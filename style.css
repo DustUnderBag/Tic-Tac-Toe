@@ -80,6 +80,14 @@ html, body {
         height: 90px;
         border-radius: 1rem;
     }
+
+    & .score {
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
 }
 
 #xTurn {
@@ -157,23 +165,35 @@ button.cell {
 }
 
 .winner {
-    font-size: 1.6rem;
+    width: 180px;
+    height: 50px;
+    font-size: 1.8rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nav-buttons {
     width: min(85vw, 500px);
+    height: 50px;
     display: flex;
+    padding-inline: 6px;
 }
 
-.nav-buttons .restart{
+.nav-buttons > *{
     border: none;
     border-bottom: 2px solid transparent;
-    padding: 0px;
     outline: none;
+
     font-weight: bold;
     font-size: 1.2rem;
-    background: none;
+}
 
+.nav-buttons .restart {
+    color: #fff;
+    background: none;
+    padding: 0;
     &:hover {
         color: var(--primary-color);
         border-bottom: 2px solid var(--primary-color);
@@ -183,6 +203,19 @@ button.cell {
 .nav-buttons .nextRnd {
     margin-left: auto;
     margin-right: 0;
+    width: 140px;
+
+    color: var(--background-color);
+    background-color: var(--primary-color);
+    border: 0px solid var(--primary-color);
+    border-radius: 6px ;
+
+    transition: border .1s, background .2s, color .2s;
+    &:hover {
+        border-width: 5px;
+        background-color: var(--background-color); 
+        color: var(--primary-color);
+    }
 }
 
 #mode-window, #robot-window, #friend-window {
