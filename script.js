@@ -498,9 +498,9 @@ function screenController(game) {
     function showWinner() {
         const winner = game.getWinner();
         if(winner === "X" || winner === "O") {
-            winnerDiv.textContent = `${winner} WINS!`;    
+            winnerDiv.textContent = `${winner} wins!`;    
         }else if(winner === "tie") {
-            winnerDiv.textContent = `TIE!`;
+            winnerDiv.textContent = `Tie!`;
         }
     }
 }
