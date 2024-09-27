@@ -44,6 +44,9 @@
 
 html, body {
     height: 100dvh;
+    background-color: var(--background-color);
+    min-width: 320px;
+    min-height: 800px;
 }
 
 .game {
