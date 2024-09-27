@@ -169,7 +169,7 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
     const getXScore = () => xScore;
     const getOScore = () => oScore;
 
-    function reset() {
+    function resetRound() {
         board.reset();
         winner = "";
         activePlayer = firstPlayer;
@@ -182,8 +182,32 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
         firstPlayer = activePlayer;
     }
 
+    function pauseGame() {
+        winner = "game paused";
+        console.log(winner);
+        if(isRoundEnd()) console.log("game ends");
+    }
+
+    function newGame(newGameMode, newPlayerSide, newDiffculty, 
+                     newPlayerX_name, newPlayerO_name) {
+        gameMode = newGameMode;
+        playerSide = newPlayerSide;
+        diffculty = newDiffculty;
+        playerX_name = newPlayerX_name;
+        playerO_name = newPlayerO_name;
+
+        board.reset();
+        winner = "";
+
+        xScore = 0;
+        oScore = 0;
+
+        setPlayers();
+        activePlayer = playerX;
+        firstPlayer = playerX;
+    }
+
     function setPlayers() {
-        console.log("Mode " + gameMode);
         if(gameMode === 0) {
             if(playerSide === "X") {
                 playerX = player(playerX_name, "X");
@@ -322,7 +346,8 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
         isRoundEnd,
 
         getXScore, getOScore,
-        reset, nextRound,
+        resetRound, nextRound, newGame,
+        pauseGame,
     };
 };
 
@@ -343,7 +368,7 @@ function screenController(game) {
     boardDiv.addEventListener('click', clickHandler);
     restartBtn.addEventListener('click', () => {
         if(game.isRoundEnd()) return; //Can't reset game if round has ended.
-        game.reset();
+        game.resetRound();
         resetRound();
     });
     nextRndBtn.addEventListener('click', () => {
@@ -351,8 +376,11 @@ function screenController(game) {
         game.nextRound();
         resetRound();
     });
+    
 
+    let repeatBotPlays;
     resetRound();
+    updateScores();
 
     function render() {
         updateBoard();
@@ -365,26 +393,24 @@ function screenController(game) {
         
         restartBtn.style.display = "block";
         nextRndBtn.style.display = "none";
-
         //Don't show restartBtn when bot plays against bot.
         if(game.getGameMode() == 2) restartBtn.style.display = "none"; 
         
         render();    
 
-        let playInt;
-        if(playInt) clearInterval(playInt);
-        if(game.getActivePlayer().type === "bot") {
-            playInt = setInterval(() => {
+        if(repeatBotPlays) clearInterval(repeatBotPlays);
+        if(game.getActivePlayer().type === "bot" && !game.isRoundEnd()) {
+            repeatBotPlays = setInterval(() => {
                 botPlays();
                 render();
 
                 if(game.getActivePlayer().type !== "bot" ) {
-                    clearInterval(playInt);
+                    clearInterval(repeatBotPlays);
                     return;
                 }
 
                 if(game.isRoundEnd()) {
-                    clearInterval(playInt);
+                    clearInterval(repeatBotPlays);
                     restartBtn.style.display = "none";
                     nextRndBtn.style.display = "block";
                     return;
@@ -722,8 +748,10 @@ function bot(marker, Gameboard, diffculty) {
     const startBtn_friend = document.querySelector('#friend-window button.start');
     
     const gameDiv = document.querySelector('.game');
+   
+    const newGameBtn = document.querySelector('.game .new-game');
 
-
+    let game;
     let mode, playerSide, difficulty;
     let playerX_name, playerO_name;
 
@@ -733,6 +761,7 @@ function bot(marker, Gameboard, diffculty) {
     );
     startBtn_robot.addEventListener('click', startGame_bot);
     startBtn_friend.addEventListener('click', startGame_friend);
+    newGameBtn.addEventListener('click', toHomePage);
 
     //Event handlers
     function chooseMode() {
@@ -772,10 +801,6 @@ function bot(marker, Gameboard, diffculty) {
             playerO_name = "Player O";
         }
 
-        console.log("side: " + playerSide);
-        console.log("diff: " + difficulty);
-        console.log(playerX_name + " vs " + playerO_name);
-
         robotWindow.style.display = "none";
         gameDiv.style.display = "flex";
 
@@ -791,7 +816,6 @@ function bot(marker, Gameboard, diffculty) {
         if(!playerX_name) playerX_name = "Player X"
         if(!playerO_name) playerO_name = "Player O"
 
-        console.log(playerX_name + " vs " + playerO_name);
         startGame();
     }
 
@@ -805,9 +829,29 @@ function bot(marker, Gameboard, diffculty) {
         startGame();
     }
 
+    function toHomePage() {
+        if(game) { 
+            game.pauseGame();
+        }
+        gameDiv.style.display = "none";
+        friendWindow.style.display = "none";
+        robotWindow.style.display = "none";
+        modeWindow.style.display = "flex";
+    }
+
     function startGame() {
-        const game = gameController( mode, playerSide, difficulty,
-            playerX_name, playerO_name);
+        if(!game) {
+            console.log("brand new game");
+            game = gameController( mode, playerSide, difficulty,
+                                   playerX_name, playerO_name);
+            screenController(game);    
+            return;
+        }
+
+        console.log("reset New game");
+        game.resetRound();
+        game.newGame(mode, playerSide, difficulty,
+                     playerX_name, playerO_name);
         screenController(game);
     }
 })();
