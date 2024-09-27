@@ -260,6 +260,56 @@ button.new-game {
     justify-content: center;
 }
 
+#mode-window button.option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 300px;
+    height: 150px;
+
+    padding: 12px;
+    color: var(--primary-color);
+    outline: none;
+    font-size: 1.4rem;
+
+    background-color: var(--background-color-darker);
+    border: 8px solid var(--background-color-darker);
+    
+    border-radius: 0px;
+
+    position: relative;
+    box-shadow: 5px 5px var(--background-color-darker);
+    transition: all 0.1s linear;
+
+    & + button {
+        margin-top: 1rem;
+    }
+
+    &:hover {
+        background-color: #3f35473d;;
+    }
+
+    &:active {
+        box-shadow: 0 0 var(--background-color-darker);
+        top: 3px;
+        left: 3px;
+    }
+}
+
+button.option img {
+    width: 80px;
+    height: 80px;
+    margin-block: auto;
+    display: inline;
+}
+
+button#bot-against-bot img {
+    height: 70px;
+}
+
+
 #robot-window, #friend-window {
     justify-content: space-between;
 
