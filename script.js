@@ -537,19 +537,20 @@ function bot(marker, Gameboard, difficulty) {
         let finalCellInRow = finishCombo();
         if( typeof finalCellInRow === 'number' ) return finalCellInRow;
 
-        let posToBlock = block();
-        if( typeof posToBlock === 'number' ) return posToBlock;
+        if(difficulty !== "easy") {
+            let posToBlock = block();
+            if( typeof posToBlock === 'number' ) return posToBlock;
+        }
 
-
-        if(game.getMarkCount() === 0) {
-            //Best opening move is to play corners.
+          //Best opening move is to play corners.
+        if(difficulty === "hard" && game.getMarkCount() === 0) {
             const corners = [0, 2, 6, 8];
             return corners[ getRandomItem(corners.length) ];
         }
 
-        if(game.getMarkCount() === 2 && board[4].getMarker() === enemyMarker) {
-            //If bot has a corner and opponent has the center, 
-            //bot should take the corner opposite to original corner to form a diagonal.
+        //If bot has a corner and opponent has the center, 
+        //bot should take the corner opposite to original corner to form a diagonal.
+        if(difficulty === "hard" && game.getMarkCount() === 2 && board[4].getMarker() === enemyMarker) {
             let cornerTaken;
             const corners = [0, 2, 6 ,8];
             for(let corner of corners) {
@@ -561,7 +562,7 @@ function bot(marker, Gameboard, difficulty) {
         }
         
          //If bot's playing the 2ND move, responding to opponent's openning move.
-        if(game.getMarkCount() === 1) {
+        if(difficulty === "hard" && game.getMarkCount() === 1) {
             //Block Center Fork: If opponent plays center, take any corner.
             if(board[4].getMarker() === enemyMarker) return takeAnyCorner();
             
@@ -573,8 +574,8 @@ function bot(marker, Gameboard, difficulty) {
             if( typeof edgeTaken === "number") return takeOppositeEdge(edgeTaken);
         }
 
-        if(game.getMarkCount() === 3) {
-            //If opponent took diagonal corners, while bot has the center, bot should take an edge.
+        //If opponent took diagonal corners, while bot has the center, bot should take an edge.
+        if(difficulty === "hard" && game.getMarkCount() === 3) {
             if( diagonalTakenByOpp() ) {
                 console.log("diagonals are taken by opponent, take any edge now");
                 const edges = [1, 3, 5, 7];
@@ -582,7 +583,6 @@ function bot(marker, Gameboard, difficulty) {
             }
         }
     
-
         const targetCombo = findTargetCombo();
         if( !targetCombo ) { //If can't find any availble combos.
             console.log("No combos, get random one");
