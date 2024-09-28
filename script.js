@@ -147,7 +147,7 @@ const Combo = function(arr) {
     };
 }
 
-const gameController = function(gameMode = 0, playerSide = "X", diffculty = "normal",
+const gameController = function(gameMode = 0, playerSide = "X", difficulty = "normal",
                                 playerX_name = "Player X", playerO_name = "Player O" ) {
     const board = Gameboard();
     const combos = board.getCombos();
@@ -188,11 +188,11 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
         if(isRoundEnd()) console.log("game ends");
     }
 
-    function newGame(newGameMode, newPlayerSide, newDiffculty, 
+    function newGame(newGameMode, newPlayerSide, newdifficulty, 
                      newPlayerX_name, newPlayerO_name) {
         gameMode = newGameMode;
         playerSide = newPlayerSide;
-        diffculty = newDiffculty;
+        difficulty = newdifficulty;
         playerX_name = newPlayerX_name;
         playerO_name = newPlayerO_name;
 
@@ -211,9 +211,9 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
         if(gameMode === 0) {
             if(playerSide === "X") {
                 playerX = player(playerX_name, "X");
-                playerO = bot("O", board, diffculty);
+                playerO = bot("O", board, difficulty);
             }else {
-                playerX = bot("X", board, diffculty);
+                playerX = bot("X", board, difficulty);
                 playerO = player(playerO_name, "O");
             }
             return;
@@ -226,8 +226,8 @@ const gameController = function(gameMode = 0, playerSide = "X", diffculty = "nor
         }
 
         if(gameMode === 2) {
-            playerX = bot("X", board, diffculty);
-            playerO = bot("O", board, diffculty);
+            playerX = bot("X", board, difficulty);
+            playerO = bot("O", board, difficulty);
         }
     }
 
@@ -507,8 +507,8 @@ function screenController(game) {
 }
 
 
-function bot(marker, Gameboard, diffculty) {
-    const playerName = `${diffculty} Bot ${marker}`.toUpperCase();
+function bot(marker, Gameboard, difficulty) {
+    const playerName = `${difficulty} Bot ${marker}`.toUpperCase();
     const type = "bot";
     const enemyMarker = marker === "O"
                        ? "X" : "O"; 
@@ -789,7 +789,7 @@ function bot(marker, Gameboard, diffculty) {
         mode = 0;
         
         const side_checked = document.querySelector('input[name="side"]:checked');
-        const difficulty_checked = document.querySelector('input[name="diffculty"]:checked');
+        const difficulty_checked = document.querySelector('input[name="difficulty"]:checked');
         
         playerSide = side_checked.value;
         difficulty = difficulty_checked.value;
