@@ -124,7 +124,7 @@ html, body {
     width: var(--gameboard-width);
     height: auto;
     aspect-ratio: 1 / 1;
-    max-width: 500px;
+    max-width: 430px;
     margin-top: 12px;
     margin-bottom: 1rem;
     display: grid;
@@ -179,7 +179,7 @@ button.cell {
 
 .nav-buttons {
     width: var(--gameboard-width);
-    max-width: 500px;
+    max-width: 430px;
     height: 40px;
     min-height: 40px;
     display: flex;
@@ -307,6 +307,9 @@ button#bot-against-bot img {
 
 #robot-window, #friend-window {
     justify-content: space-between;
+    & > * {
+        margin-top: 16px;
+    }
 
     & h1 {
         font-size: 3rem;
@@ -440,7 +443,6 @@ button.start {
     border: 1px solid var(--primary-color);
     border-radius: var(--border-radius);
     
-    margin-top: 1.2rem;
     transition: all .2s linear;
 
     &:hover, &:active {
@@ -510,8 +512,10 @@ button.start {
 
 
 @media screen and (max-width: 400px) {
-    body {
-        padding-inline: 15px;
+    button.start {
+        width: 80%;
+        height: 70px;
+        font-size: 2.4rem;
     }
 
     #mode-window, #friend-window, #robot-window, .game {
@@ -551,10 +555,6 @@ button.start {
 
 
 @media screen and (max-width: 375px) {
-    body {
-        padding: 20px;
-    }
-
     .game .gameboard {
         width: calc(200px + 30vw);
     }
