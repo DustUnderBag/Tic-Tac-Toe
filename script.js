@@ -363,7 +363,7 @@ function screenController(game) {
 
     const restartBtn = document.querySelector(".game button.restart");
     const nextRndBtn = document.querySelector(".game button.nextRnd");
-    const winnerDiv = document.querySelector('.result > .winner');
+    const winnerDiv = document.querySelector('.winner');
 
     boardDiv.addEventListener('click', clickHandler);
     restartBtn.addEventListener('click', () => {
@@ -498,7 +498,8 @@ function screenController(game) {
     function showWinner() {
         const winner = game.getWinner();
         if(winner === "X" || winner === "O") {
-            winnerDiv.textContent = `${winner} wins!`;    
+            let winnerName = game.getActivePlayer().playerName;
+            winnerDiv.textContent = `${winnerName} wins!`;    
         }else if(winner === "tie") {
             winnerDiv.textContent = `Tie!`;
         }
@@ -507,7 +508,7 @@ function screenController(game) {
 
 
 function bot(marker, Gameboard, diffculty) {
-    const playerName = "Bot " + marker + " " +diffculty.toUpperCase();
+    const playerName = `${diffculty} Bot ${marker}`.toUpperCase();
     const type = "bot";
     const enemyMarker = marker === "O"
                        ? "X" : "O"; 

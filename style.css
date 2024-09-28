@@ -40,23 +40,20 @@
     --primary-color: #ffaf38;
     --border-radius: 24px;
     --mark-color: #ffffffce;
-    --page-padding: 40px;
+    --page-padding: 30px;
+    --gameboard-width: calc(300px + 10vw);
 }
 
 html, body {
     height: 100svh;
     background-color: var(--background-color);
-    min-width: 320px;
-    min-height: 860px;
 }
 
 .game {
     height: 100%;
-
     display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     text-align: center;
 
     background-color: var(--background-color);
@@ -70,28 +67,34 @@ html, body {
 
 .player-info {
     display: flex;
-    gap: 3rem;
-    font-size: 3rem;
+    gap: clamp(110px, 35vw, 150px);
+    margin-top: 16px;
 }
 
 .player-info > * {
-    width: 100px;
-    height: 150px;
+    display: grid;
+    justify-items: center;
+    width: min(100px, 20vw);
+    min-width: 80px;
 
     & > .turn {
         width: 100%;
-        height: 90px;
+        height: auto;
+        aspect-ratio: 1 / 1;
         border-radius: 1rem;
     }
 
     & .score {
-        height: 40px;
+        width: 50%;
         margin-top: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
+        font-size: 2.4rem;
     }
+}
+
+.winner {
+    min-height: 40px;
+    font-size: 1.6rem;
+    word-spacing: 6px;
 }
 
 #xTurn {
@@ -118,10 +121,10 @@ html, body {
 }
 
 .gameboard {
-    width: calc(300px + 10vw);
-    height: calc(300px + 10vw);
+    width: var(--gameboard-width);
+    height: auto;
+    aspect-ratio: 1 / 1;
     max-width: 500px;
-    max-height: 500px;
     margin-top: 12px;
     margin-bottom: 1rem;
     display: grid;
@@ -174,21 +177,12 @@ button.cell {
     background-image: url(./img/circle_yellow.svg);
 }
 
-.winner {
-    width: 180px;
-    height: 40px;
-    font-size: 1.8rem;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .nav-buttons {
-    width: min(85vw, 500px);
-    height: 60px;
+    width: var(--gameboard-width);
+    max-width: 500px;
+    height: 40px;
+    min-height: 40px;
     display: flex;
-    padding-inline: 6px;
 }
 
 .nav-buttons > *{
@@ -211,12 +205,8 @@ button.cell {
 }
 
 .nav-buttons .nextRnd {
-    width: 140px;
-    height: 40px;
-
     margin-left: auto;
     margin-right: 0;
-    font-size: 1.2rem;
     color: var(--background-color);
     background-color: var(--primary-color);
     border: 5px solid var(--primary-color);
@@ -519,7 +509,7 @@ button.start {
 }
 
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 400px) {
     body {
         padding-inline: 15px;
     }
@@ -528,11 +518,11 @@ button.start {
         font-size: 0.8rem;
 
         & h1{
-            font-size: 1.6rem;
+            font-size: 1.8rem;
         }
 
         & h2 {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
         }
     }
 
@@ -542,10 +532,47 @@ button.start {
 
 
     #robot-window {
-
         & .sides input + label  {
             min-width: 100px;
             min-height: 100px;
         }
+    }
+
+    .game .score {
+        font-size: 2rem;
+    }
+
+    .game .winner {
+        font-size: 1.4rem;
+        height: 26px;
+    }
+
+}
+
+
+@media screen and (max-width: 375px) {
+    body {
+        padding: 20px;
+    }
+
+    .game .gameboard {
+        width: calc(200px + 30vw);
+    }
+
+    .game .nav-buttons {
+        width: calc(200px + 30vw);
+        font-size: 1rem;
+        height: 30px;
+        min-height: 30px;
+    }
+
+    .nav-buttons .nextRnd{
+        border-width: 2px;
+    }
+
+    .game .new-game {
+        width: 120px;
+        height: 45px;
+        font-size: 1.2rem;
     }
 }
