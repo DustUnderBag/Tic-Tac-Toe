@@ -226,8 +226,8 @@ const gameController = function(gameMode = 0, playerSide = "X", difficulty = "no
         }
 
         if(gameMode === 2) {
-            playerX = bot("X", board, difficulty);
-            playerO = bot("O", board, difficulty);
+            playerX = bot("X", board, "normal");
+            playerO = bot("O", board, "hard");
         }
     }
 
@@ -825,8 +825,8 @@ function bot(marker, Gameboard, difficulty) {
         gameDiv.style.display = "flex";
 
         difficulty = "normal";
-        playerX_name = "Bot X " + difficulty.toUpperCase();
-        playerO_name = "Bot O " + difficulty.toUpperCase();
+        playerX_name = "Bot X " + "normal".toUpperCase();
+        playerO_name = "Bot O " + "hard".toUpperCase();
         startGame();
     }
 
