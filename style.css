@@ -40,13 +40,14 @@
     --primary-color: #ffaf38;
     --border-radius: 24px;
     --mark-color: #ffffffce;
+    --page-padding: 40px;
 }
 
 html, body {
-    height: 100dvh;
+    height: 100svh;
     background-color: var(--background-color);
     min-width: 320px;
-    min-height: 800px;
+    min-height: 860px;
 }
 
 .game {
@@ -60,8 +61,7 @@ html, body {
 
     background-color: var(--background-color);
     color: var(--primary-color);
-    padding-block: 50px;
-
+    padding-block: var(--page-padding);
 }
 
 .game h1 {
@@ -118,8 +118,10 @@ html, body {
 }
 
 .gameboard {
-    width: min(85vw, 500px);
-    height: min(85vw, 500px);
+    width: calc(300px + 10vw);
+    height: calc(300px + 10vw);
+    max-width: 500px;
+    max-height: 500px;
     margin-top: 12px;
     margin-bottom: 1rem;
     display: grid;
@@ -251,7 +253,7 @@ button.new-game {
     background-color: var(--background-color);
     color: var(--primary-color);
     height: 100%;
-    padding-block: 50px;
+    padding-block: var(--page-padding);
 
     display: flex;
     flex-direction: column;
@@ -514,4 +516,36 @@ button.start {
     
     border: 3px solid var(--primary-color);
     border-radius: 6px;
+}
+
+
+@media screen and (max-width: 320px) {
+    body {
+        padding-inline: 15px;
+    }
+
+    #mode-window, #friend-window, #robot-window, .game {
+        font-size: 0.8rem;
+
+        & h1{
+            font-size: 1.6rem;
+        }
+
+        & h2 {
+            font-size: 1.2rem;
+        }
+    }
+
+    #mode-window .options button.option {
+        width: 280px
+    }
+
+
+    #robot-window {
+
+        & .sides input + label  {
+            min-width: 100px;
+            min-height: 100px;
+        }
+    }
 }
