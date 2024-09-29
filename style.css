@@ -239,7 +239,7 @@ button.new-game {
     }
 }
 
-#mode-window, #robot-window, #friend-window {
+#mode-window, #robot-window, #friend-window, #robotTwo-window {
     background-color: var(--background-color);
     color: var(--primary-color);
     height: 100%;
@@ -249,6 +249,7 @@ button.new-game {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    gap: 16px;
 }
 
 #mode-window {
@@ -305,8 +306,8 @@ button#bot-against-bot img {
 }
 
 
-#robot-window, #friend-window {
-    justify-content: space-between;
+#robot-window, #friend-window, #robotTwo-window {
+    justify-content: start;
     & > * {
         margin-top: 16px;
     }
@@ -321,7 +322,7 @@ button#bot-against-bot img {
     }
 }
 
-#robot-window, #friend-window {
+#robot-window, #friend-window, #robotTwo-window {
     display: none;
 }
 
@@ -444,6 +445,7 @@ button.start {
     border-radius: var(--border-radius);
     
     transition: all .2s linear;
+    margin-top: auto;
 
     &:hover, &:active {
         background-color: var(--background-color);
@@ -511,6 +513,53 @@ button.start {
 }
 
 
+#robotTwo-window h2 > div {
+    display: flex;
+    justify-content: center;
+    & > img{
+        width: 70px;
+        height: 70px;
+    }
+}
+
+#robotTwo-window > .bots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(50px, 20vw ,90px);
+}
+
+.bots > * {
+    display: grid;
+    justify-items: center;
+}
+
+#robotTwo-window .icon {
+    width: 50%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    &.X{
+        background-image: url(./img/cross_yellow.svg);
+        background-size: contain;
+    }
+
+    &.O{
+        background-image: url(./img/circle_yellow.svg);
+    }
+}
+
+#robotTwo-window input[type="radio"] {
+    appearance: none;
+    display: block;
+}
+
+#robotTwo-window label {
+    width: 160px;
+}
+
 @media screen and (max-width: 400px) {
     button.start {
         width: 80%;
@@ -518,7 +567,8 @@ button.start {
         font-size: 2.4rem;
     }
 
-    #mode-window, #friend-window, #robot-window, .game {
+    #mode-window, #friend-window, #robot-window, #robotTwo-window,
+    .game {
         font-size: 0.8rem;
 
         & h1{
@@ -540,6 +590,19 @@ button.start {
             min-width: 100px;
             min-height: 100px;
         }
+    }
+
+    #robotTwo-window > .bots {
+        gap: 30px;
+    }
+
+    #robotTwo-window .icon {
+        width: 90px;
+    }
+
+    #robotTwo-window label {
+        width: 90px;
+        font-size: 1.2rem;
     }
 
     .game .score {

@@ -147,7 +147,8 @@ const Combo = function(arr) {
     };
 }
 
-const gameController = function(gameMode = 0, playerSide = "X", difficulty = "normal",
+const gameController = function(gameMode = 0, playerSide = "X", 
+                                difficulty = "normal", difficultyX = "normal", difficultyO = "normal",
                                 playerX_name = "Player X", playerO_name = "Player O" ) {
     const board = Gameboard();
     const combos = board.getCombos();
@@ -188,11 +189,14 @@ const gameController = function(gameMode = 0, playerSide = "X", difficulty = "no
         if(isRoundEnd()) console.log("game ends");
     }
 
-    function newGame(newGameMode, newPlayerSide, newdifficulty, 
+    function newGame(newGameMode, newPlayerSide, 
+                     newDifficulty, newDifficultyX, newDifficultyO,
                      newPlayerX_name, newPlayerO_name) {
         gameMode = newGameMode;
         playerSide = newPlayerSide;
-        difficulty = newdifficulty;
+        difficulty = newDifficulty;
+        difficultyX = newDifficultyX;
+        difficultyO = newDifficultyO;
         playerX_name = newPlayerX_name;
         playerO_name = newPlayerO_name;
 
@@ -226,8 +230,8 @@ const gameController = function(gameMode = 0, playerSide = "X", difficulty = "no
         }
 
         if(gameMode === 2) {
-            playerX = bot("X", board, "normal");
-            playerO = bot("O", board, "hard");
+            playerX = bot("X", board, difficultyX);
+            playerO = bot("O", board, difficultyO);
         }
     }
 
@@ -748,12 +752,16 @@ function bot(marker, Gameboard, difficulty) {
     const playerOName_input = document.querySelector('input[name="playerO-name"]');
     const startBtn_friend = document.querySelector('#friend-window button.start');
     
+    const robotTwoWindow = document.querySelector('#robotTwo-window');
+    const startBtn_robotTwo = document.querySelector('#robotTwo-window button.start');
+
     const gameDiv = document.querySelector('.game');
    
     const newGameBtn = document.querySelector('.game .new-game');
 
     let game;
     let mode, playerSide, difficulty;
+    let difficultyX, difficultyO; 
     let playerX_name, playerO_name;
 
     //Bind events
@@ -762,6 +770,7 @@ function bot(marker, Gameboard, difficulty) {
     );
     startBtn_robot.addEventListener('click', startGame_bot);
     startBtn_friend.addEventListener('click', startGame_friend);
+    startBtn_robotTwo.addEventListener('click', startGame_twoBots);
     newGameBtn.addEventListener('click', toHomePage);
 
     //Event handlers
@@ -780,7 +789,7 @@ function bot(marker, Gameboard, difficulty) {
                 break;
             case "bot-against-bot":
                 mode = 2;
-                startGame_twoBots();
+                robotTwoWindow.style.display = "flex";
         }           
         console.log("mode: " + option);
     }
@@ -824,9 +833,12 @@ function bot(marker, Gameboard, difficulty) {
         mode = 2;
         gameDiv.style.display = "flex";
 
-        difficulty = "normal";
-        playerX_name = "Bot X " + "normal".toUpperCase();
-        playerO_name = "Bot O " + "hard".toUpperCase();
+        difficultyX = document.querySelector('input[name="difficultyX"]:checked').value;
+        difficultyO = document.querySelector('input[name="difficultyO"]:checked').value;
+        playerX_name = "Bot X " + difficultyX.toUpperCase();
+        playerO_name = "Bot O " + difficultyO.toUpperCase();
+        console.log("diffX: " + difficultyX);
+        console.log("diffO " + difficultyO);
         startGame();
     }
 
@@ -843,7 +855,8 @@ function bot(marker, Gameboard, difficulty) {
     function startGame() {
         if(!game) {
             console.log("brand new game");
-            game = gameController( mode, playerSide, difficulty,
+            game = gameController( mode, playerSide, 
+                                   difficulty, difficultyX, difficultyO,
                                    playerX_name, playerO_name);
             screenController(game);    
             return;
@@ -851,7 +864,8 @@ function bot(marker, Gameboard, difficulty) {
 
         console.log("reset New game");
         game.resetRound();
-        game.newGame(mode, playerSide, difficulty,
+        game.newGame(mode, playerSide, 
+                     difficulty, difficultyX, difficultyO,
                      playerX_name, playerO_name);
         screenController(game);
     }
