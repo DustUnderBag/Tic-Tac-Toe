@@ -850,6 +850,7 @@ function bot(marker, Gameboard, difficulty) {
         gameDiv.style.display = "none";
         friendWindow.style.display = "none";
         robotWindow.style.display = "none";
+        robotTwoWindow.style.display = "none";
         modeWindow.style.display = "flex";
     }
 
