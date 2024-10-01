@@ -415,6 +415,7 @@ function screenController(game) {
 
                 if(game.isRoundEnd()) {
                     clearInterval(repeatBotPlays);
+                    updateScores();
                     restartBtn.style.display = "none";
                     nextRndBtn.style.display = "block";
                     return;
