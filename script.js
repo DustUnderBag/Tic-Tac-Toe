@@ -831,6 +831,7 @@ function bot(marker, Gameboard, difficulty) {
 
     function startGame_twoBots() {
         mode = 2;
+        robotTwoWindow.style.display = "none";
         gameDiv.style.display = "flex";
 
         difficultyX = document.querySelector('input[name="difficultyX"]:checked').value;
