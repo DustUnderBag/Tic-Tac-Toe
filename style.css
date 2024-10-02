@@ -1,4 +1,13 @@
-/* Default Style */
+.afacad-flux-normal {
+  font-family: "Afacad Flux", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: normal;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0;
+}
+
+/* Reset Style */
 *, *::before, *::after {
     box-sizing: border-box;
   }
@@ -44,8 +53,14 @@
     --gameboard-width: calc(300px + 10vw);
 }
 
-html, body {
+html {
     height: 100svh;
+}
+
+body {
+    font-family: "Afacad Flux", system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    height: 100%;
+    letter-spacing: 1px;
     background-color: var(--background-color);
 }
 
