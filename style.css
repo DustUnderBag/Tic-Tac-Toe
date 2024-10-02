@@ -299,8 +299,8 @@ button#new-game {
     align-items: center;
     justify-content: center;
 
-    width: 300px;
-    height: 150px;
+    width: 340px;
+    height: 170px;
 
     padding: 12px;
     color: var(--primary-color);
@@ -588,7 +588,8 @@ button.start {
     }
 
     #mode-window .options button.option {
-        width: 280px;
+        width: 310px;
+        height: 150px;
     }
 
     #robot-window .sides {
