@@ -759,7 +759,7 @@ function bot(marker, Gameboard, difficulty) {
 
     const gameDiv = document.querySelector('.game');
    
-    const newGameBtn = document.querySelector('.game .new-game');
+    const newGameBtn = document.querySelector('.game #new-game');
 
     let game;
     let mode, playerSide, difficulty;

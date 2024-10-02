@@ -56,7 +56,6 @@
 
 html {
     height: 100svh;
-    min-height: 700px;
 }
 
 body {
@@ -143,7 +142,6 @@ body {
     aspect-ratio: 1 / 1;
     max-width: 430px;
     margin-top: 12px;
-    margin-bottom: 1rem;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 1fr;
@@ -236,7 +234,7 @@ button.cell {
     }
 }
 
-button.new-game {
+button#new-game {
     width: 140px;
     height: 60px;
     color: #fff;
@@ -372,6 +370,8 @@ button#bot-against-bot img {
 .sides {
     display: flex;
     gap: 2.5rem;
+    width: 340px;
+    justify-content: space-between;
 }
 
 .sides input + label {
@@ -478,9 +478,14 @@ button.start {
     margin-bottom: 0;
 }
 
+#friend-window p + p {
+    margin-top: var(--my-margin-top);
+}
+
 #friend-window label {
     width: 140px;
-    height: 140px;
+    aspect-ratio: 1 / 1;
+    height: auto;
     margin-inline: auto;
 
     &[for="playerX-name"] {
@@ -533,7 +538,7 @@ button.start {
 #robotTwo-window > .bots {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: clamp(50px, 20vw ,90px);
+    gap: 60px;
 }
 
 .bots > * {
@@ -568,13 +573,7 @@ button.start {
     width: 160px;
 }
 
-@media screen and (max-width: 400px) {
-    button.start {
-        width: 80%;
-        height: 70px;
-        font-size: 2.4rem;
-    }
-
+@media screen and (max-width: 430px) {
     #mode-window, #friend-window, #robot-window, #robotTwo-window,
     .game {
         font-size: 0.8rem;
@@ -589,9 +588,19 @@ button.start {
     }
 
     #mode-window .options button.option {
-        width: 280px
+        width: 280px;
     }
 
+    #robot-window .sides {
+        width: auto;
+    }
+
+    button.start {
+        width: 80%;
+        height: 70px;
+        font-size: 2.4rem;
+        margin-top: 40px;
+    }
 
     #robot-window {
         & .sides input + label  {
@@ -601,7 +610,7 @@ button.start {
     }
 
     #robotTwo-window > .bots {
-        gap: 30px;
+        margin-top: 16px;
     }
 
     #robotTwo-window .icon {
@@ -609,8 +618,8 @@ button.start {
     }
 
     #robotTwo-window label {
-        width: 90px;
-        font-size: 1.2rem;
+        width: 120px;
+        font-size: 1.6rem;
     }
 
     .game .score {
@@ -625,7 +634,23 @@ button.start {
 }
 
 
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 380px) {
+    :root {
+        --my-margin-top: 10px;
+    }
+    
+    #mode-window .options {
+        margin-top: 1.2rem;
+    }
+
+    .game .score {
+        margin-top: .3rem;
+    }
+
+    .game .winner {
+        min-height: 30px;
+    }
+
     .game .gameboard {
         width: calc(200px + 30vw);
     }
@@ -635,15 +660,24 @@ button.start {
         font-size: 1rem;
         height: 30px;
         min-height: 30px;
+
+        & > * {
+            font-size: 1rem;
+        }
     }
 
     .nav-buttons .nextRnd{
         border-width: 2px;
     }
 
-    .game .new-game {
+    .game #new-game {
         width: 120px;
         height: 45px;
         font-size: 1.2rem;
+        margin-top: 0px;
+    }
+
+    #friend-window label {
+        width: 100px;
     }
 }
